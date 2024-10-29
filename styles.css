@@ -1,0 +1,35 @@
+.tablero {
+    display: inline-grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    gap: 3px;
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+    border-radius: 8px;
+    border: 3px solid black;
+    padding: 10px;
+}
+
+.J1 {
+    border-color: lightseagreen;
+}
+
+.J2 {
+    border-color: crimson;
+}
+
+.position {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    padding: 0.3em;
+    margin: 3px auto;
+    min-height: 1.2em;
+}
+
+.position:hover {
+    background-color: black;
+    color: white;
+}

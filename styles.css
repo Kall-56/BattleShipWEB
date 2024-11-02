@@ -1,4 +1,4 @@
-.tablero {
+.table {
     display: inline-grid;
     grid-template-columns: repeat(11, 1fr);
     grid-template-rows: repeat(1, 1fr);
@@ -11,11 +11,11 @@
     padding: 10px;
 }
 
-.J1 {
+.p1 {
     border-color: lightseagreen;
 }
 
-.J2 {
+.p2 {
     border-color: crimson;
 }
 

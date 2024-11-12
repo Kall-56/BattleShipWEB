@@ -1,35 +1,62 @@
+@font-face {
+    font-family: "RocknRollOne";
+    src: url("RocknRollOne-Regular.ttf") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background-image: url("background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-family: RocknRollOne, serif;
+    color: white;
+}
+
+.multiplayer {
+    display: none;
+}
+
 .table {
-    display: inline-grid;
+    display: grid;
     grid-template-columns: repeat(11, 1fr);
     grid-template-rows: repeat(1, 1fr);
-    gap: 3px;
     width: fit-content;
     height: fit-content;
     margin: auto;
-    border-radius: 8px;
-    border: 3px solid black;
-    padding: 10px;
-}
-
-.p1 {
-    border-color: lightseagreen;
-}
-
-.p2 {
-    border-color: crimson;
+    border-radius: 1%;
+    border: 0.5em solid #00000080;
+    padding: 1px;
 }
 
 .position {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid black;
-    padding: 0.3em;
-    margin: 3px auto;
-    min-height: 1.2em;
+    padding: 0.6em;
+    margin: 0.375em 0.2em;
+    min-height: 1.5em;
+    background-color: #00000080;
+    border: 0.13em solid #1919707F;
+    border-radius: 0.15em;
+    cursor: default;
 }
 
-.position:hover {
-    background-color: black;
-    color: white;
+.position[id]:hover {
+    border-color: white;
+}
+
+.p1 {
+    transform: scale(0.8);
+    transform-origin: top right;
+    position: absolute;
+    top: 12%;
+    right: 1%;
+}
+
+.powerup-list {
+    position: absolute;
+    top: 37em;
+    right: 15em;
 }

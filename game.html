@@ -17,34 +17,9 @@
             <hr/>
         </header>
         <main>
-            <section class="multiplayer">
-                <h2>Select the number of players:</h2>
-                <ul>
-                    <li><a href="#"><button class="players-num" id="2-players">2</button></a></li>
-                    <li><a href="#"><button class="players-num" id="3-players">3</button></a></li>
-                    <li><a href="#"><button class="players-num" id="4-players">4</button></a></li>
-                </ul>
-            </section>
-            <section id="turn-ui">
-                <h2>Actual Turn:</h2>
-                <ol class="turn-list">
-                    <li>You</li>
-                    <li>Player 2</li>
-                    <li class="multiplayer">Player 3</li>
-                    <li class="multiplayer">Player 4</li>
-                </ol>
-                <span class="turn-comment">Select a coordinate or use a power-up</span>
-            </section>
-            <aside>
-                <h2>Move the ships to the desired position</h2>
-                <div class="boat" id="carrier"></div>
-                <div class="boat" id="battleship"></div>
-                <div class="boat" id="cruiser"></div>
-                <div class="boat" id="submarine"></div>
-                <div class="boat" id="destroyer"></div>
-            </aside>
-            <div id="tables">
-                <span>You</span>
+            <div class="left"></div>
+            <div class="right">
+                <span class="user-name">You</span>
                 <div class="table p1">
                     <div class="row">
                         <div class="position"> </div>
@@ -190,6 +165,61 @@
                         <div class="position" id="p1@j10">j10</div>
                     </div>
                 </div>
+                <aside class="powerup-list">
+                    <h2>Power-Ups</h2>
+                    <ul >
+                        <li><a href="#"><button class="powerup-bt" id="sonar">Sonar</button></a>
+                            <span>5 points</span>
+                        </li>
+                        <li><a href="#"><button class="powerup-bt" id="attack-aircraft">Attack Aircraft</button></a>
+                            <span>10 points</span>
+                        </li>
+                        <li><a href="#"><button class="powerup-bt" id="sea-mine">Sea Mine</button></a>
+                            <span>5 points</span>
+                        </li>
+                        <li><a href="#"><button class="powerup-bt" id="defensive-shield">Defensive Shield</button></a>
+                            <span>15 points</span>
+                        </li>
+                        <li><a href="#"><button class="powerup-bt" id="cruise-missile">Cruise Missile</button></a>
+                            <span>15 points</span>
+                        </li>
+                        <li><a href="#"><button class="powerup-bt" id="quick-repair">Quick Repair</button></a>
+                            <span>10 points</span>
+                        </li>
+                        <li><a href="#"><button class="powerup-bt" id="emp-attack">EMP Attack</button></a>
+                            <span>25 points</span>
+                        </li>
+                    </ul>
+                </aside>
+            </div>
+            <section class="multiplayer">
+                <h2>Select the number of players:</h2>
+                <ul>
+                    <li><a href="#"><button class="players-num" id="2-players">2</button></a></li>
+                    <li><a href="#"><button class="players-num" id="3-players">3</button></a></li>
+                    <li><a href="#"><button class="players-num" id="4-players">4</button></a></li>
+                </ul>
+            </section>
+            <section id="turn-ui" hidden>
+                <h2>Actual Turn:</h2>
+                <ol class="turn-list">
+                    <li>You</li>
+                    <li>Player 2</li>
+                    <li class="multiplayer">Player 3</li>
+                    <li class="multiplayer">Player 4</li>
+                </ol>
+                <span class="turn-comment">Select a coordinate or use a power-up</span>
+            </section>
+            <aside hidden>
+                <h2>Move the ships to the desired position</h2>
+                <div class="boat" id="carrier"></div>
+                <div class="boat" id="battleship"></div>
+                <div class="boat" id="cruiser"></div>
+                <div class="boat" id="submarine"></div>
+                <div class="boat" id="destroyer"></div>
+            </aside>
+            <div id="tables" hidden>
+
                 <span>P2</span>
                 <div class="table p2">
                     <div class="row">
@@ -631,32 +661,6 @@
                     </div>
                 </div>
             </div>
-            <aside class="powerup-list">
-                <h2>Power-Ups</h2>
-                <ul >
-                    <li><a href="#"><button class="powerup-bt" id="sonar">Sonar</button></a>
-                        <span>5 points</span>
-                    </li>
-                    <li><a href="#"><button class="powerup-bt" id="attack-aircraft">Attack Aircraft</button></a>
-                        <span>10 points</span>
-                    </li>
-                    <li><a href="#"><button class="powerup-bt" id="sea-mine">Sea Mine</button></a>
-                        <span>5 points</span>
-                    </li>
-                    <li><a href="#"><button class="powerup-bt" id="defensive-shield">Defensive Shield</button></a>
-                        <span>15 points</span>
-                    </li>
-                    <li><a href="#"><button class="powerup-bt" id="cruise-missile">Cruise Missile</button></a>
-                        <span>15 points</span>
-                    </li>
-                    <li><a href="#"><button class="powerup-bt" id="quick-repair">Quick Repair</button></a>
-                        <span>10 points</span>
-                    </li>
-                    <li><a href="#"><button class="powerup-bt" id="emp-attack">EMP Attack</button></a>
-                        <span>25 points</span>
-                    </li>
-                </ul>
-            </aside>
         </main>
         <footer>
             <hr/>

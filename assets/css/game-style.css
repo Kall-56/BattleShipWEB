@@ -1,0 +1,84 @@
+@font-face {
+    font-family: "RocknRollOne";
+    src: url("../fonts/RocknRollOne-Regular.ttf") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "ReggaeOne";
+    src: url("../fonts/ReggaeOne-Regular.ttf") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background-image: url("../images/background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-family: RocknRollOne, serif;
+    color: white;
+    margin: 0;
+}
+
+main {
+    display: flex;
+}
+
+.game-side {
+    /*background-color: rgba(222, 27, 83, 0.4);*/
+    width: 60%;
+}
+
+.user-side {
+    /*background-color: rgba(27, 66, 222, 0.4);*/
+    width: 40%;
+}
+
+.user-side, .game-side {
+    height: 77.9vh;
+}
+
+.multiplayer {
+    display: none;
+}
+
+.user-name ,.user-points {
+    font-size: 130%;
+    display: inline-block;
+    margin-left: 20%;
+    font-family: ReggaeOne, serif;
+}
+
+.user-points {
+
+}
+
+.powerup-list ul{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+}
+
+.powerup-bt {
+    font-family: RocknRollOne, serif;
+    background-color: rgba(49, 59, 115, 0.5);
+    color: aliceblue;
+    border: 0;
+    border-radius: 20%;
+}
+
+.powerup-bt:hover {
+    background-color: rgba(49, 59, 115, 0.8);
+}
+
+footer {
+    backdrop-filter: blur(150px);
+    /*background: rgba(240, 248, 255, 0.6);
+    background-size: 100% 150%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: 60%;*/
+    padding-bottom: 1%;
+}

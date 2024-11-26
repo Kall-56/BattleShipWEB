@@ -9,6 +9,7 @@
         <meta name="author" content="Alex Monsalve"/>
         <meta name="robots" content="noindex,follow"/>
         <link rel="icon" sizes="16x16 32x32 64x64" href="boat.ico" type="image/x-icon"/>
+        <link rel="stylesheet" href="index-style.css">
     </head>
     <body>
         <header>
@@ -22,8 +23,8 @@
                         <li><a href="#"><button class="main-button" id="play-bt">Play</button></a></li>
                         <li><a href="#rules-header"><button class="main-button" id="rules-bt">Rules</button></a></li>
                         <li><a href="#leaderboard-header"><button class="main-button" id="leaderboard-bt">Leaderboard</button></a></li>
-                        <li><a href="game.html"><button class="sub-button" id="single-player-bt">Single Player</button></a></li>
-                        <li><a href="game.html"><button class="sub-button" id="multiplayer-bt">MultiPlayer</button></a></li>
+                        <li><a href="components/game.html"><button class="sub-button" id="single-player-bt">Single Player</button></a></li>
+                        <li><a href="components/game.html"><button class="sub-button" id="multiplayer-bt">MultiPlayer</button></a></li>
                         <li><a href="#"><button class="sub-button" id="tournament-bt">Tournament</button></a></li>
                     </ul>
             </nav>
@@ -153,10 +154,15 @@
                 </ol>
             </section>
         </main>
-        <footer>
-            <hr/>
+        <footer class="wave-container">
             <p>No Copyright - <a href="https://www.ucab.edu.ve/">ucab.edu.ve</a></p>
             <p>by Alex Monsalve.</p>
+            <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
+            </svg>
+            <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none" style="left: 200vw;">
+                <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
+            </svg>
         </footer>
     </body>
 </html>

@@ -1,0 +1,39 @@
+.table {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(10, auto);
+    width: 60%;
+    height: 60%;
+    margin: 0 auto;
+    padding: 0;
+    gap: 1%;
+    backdrop-filter: blur(3px);
+    position: relative;
+}
+
+.table.p2 {
+    height: 85%;
+}
+
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(49, 59, 115, 0.5);
+    cursor: default;
+    font-size: 90%;
+}
+
+.cell[id] {
+    border-radius: 20%;
+    background: radial-gradient(rgba(255, 255, 255, 0.05), rgba(49, 59, 115, 0.7));
+    /*transform: scale(1);
+    transform-origin: top;
+    position: absolute;
+    top: 12%;
+    right: 1%;*/
+}
+
+.cell[id]:hover {
+    background-color: rgba(245, 245, 245, 0.5);
+}

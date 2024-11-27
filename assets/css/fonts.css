@@ -1,0 +1,18 @@
+@font-face {
+    font-family: "RocknRollOne";
+    src: url("../fonts/RocknRollOne-Regular.ttf") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ReggaeOne";
+    src: url("../fonts/ReggaeOne-Regular.ttf") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Sherwood";
+    src: url("../fonts/SherwoodRegular.ttf") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}

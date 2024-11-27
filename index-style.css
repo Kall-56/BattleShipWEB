@@ -1,88 +1,74 @@
-@font-face {
-    font-family: "RocknRollOne";
-    src: url("assets/fonts/RocknRollOne-Regular.ttf") format("woff2");
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: "ReggaeOne";
-    src: url("assets/fonts/ReggaeOne-Regular.ttf") format("woff2");
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: "SherwoodRegular";
-    src: url("assets/fonts/SherwoodRegular.ttf") format("woff2");
-    font-weight: normal;
-    font-style: normal;
-}
+@import url('assets/css/fonts.css');
 
 body {
+    width: auto;
     background-image: radial-gradient(99% 61.5% at 50% 89%,
     rgba(90, 102, 216, 0.62) 0%, rgba(76, 81, 191, 0) 100%),
     linear-gradient(90deg, #3182e4 0%, #398fdd 14.29%, #419bdb 28.57%,
             #4aa6db 42.86%, #53b1dd 57.14%, #5cbce0 71.43%, #6fd1e8 100%);
+    background-size: cover;
+    background-repeat: no-repeat;
     font-family: RocknRollOne, serif;
     color: #ffffff;
     margin: 0;
 }
 
+header {
+    background-color: white;
+}
+
+h1 {
+    margin: 0;
+    text-align: center;
+    font-family: ReggaeOne, serif;
+    font-size: 2.5em;
+    color: #3182e4;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    color: #3182e4;
+    font-family: ReggaeOne, serif;
+    font-size: 1em;
+}
+
+form input {
+    background-color: transparent;
+    border: 0.15em rgba(49, 130, 228, 0.8) solid;
+    border-radius: 1em;
+    font-family: RocknRollOne, serif;
+    color: #0053bd;
+    padding: 0 0.5em;
+}
+
+form input:nth-child(2) {
+    cursor: pointer;
+    border: none;
+    font-family: ReggaeOne, serif;
+    font-size: 1em;
+}
+
 .menu-button ul {
+    display: flex;
+    justify-content: space-evenly;
     list-style: none;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, auto);
+    width: 100%;
+    padding: 0;
+}
+
+.menu-button ul li {
+    justify-content: center;
+    align-items: center;
 }
 
 .main-button {
+    cursor: pointer;
+    background-size: cover;
+    background-color: transparent;
     border: none;
-    background: radial-gradient(rgba(0, 52, 215, 0.7), transparent);
-    color: white;
     font-family: ReggaeOne, serif;
-    width: 50%;
-    height: 50%;
+    font-size: 1em;
+    color: #3182e4;
 }
-
-.wave-container {
-    position: relative;
-    color: black;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-.wave {
-    position: absolute;
-    top: -60%;
-    left: 0.1%;
-    z-index: -1;
-    width: 200vw; /* Extend width for seamless animation */
-    height: 10em;
-    rotate: 180deg;
-    animation: wave-animation 8s linear infinite;
-}
-
-@keyframes wave-animation {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(100%); /* Moves the wave */
-    }
-}
-
-.wave path {
-    fill: #fff; /* Wave color */
-    /*animation: wave-up-down 2s ease-in-out infinite;*/
-}
-
-/*@keyframes wave-up-down {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-5%);
-    }
-}*/

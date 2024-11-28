@@ -4,11 +4,13 @@
     grid-template-rows: repeat(10, auto);
     width: 60%;
     height: 60%;
-    margin: 0 auto;
+    margin: 0;
+    margin-top: 2em;
     padding: 0;
-    gap: 1%;
+    gap: 0.3%;
     backdrop-filter: blur(3px);
     position: relative;
+    align-self: center;
 }
 
 .table.p2 {
@@ -19,19 +21,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(49, 59, 115, 0.5);
     cursor: default;
     font-size: 90%;
 }
 
 .cell[id] {
+    background-color: rgba(1, 68, 173, 0.2);
     border-radius: 20%;
-    background: radial-gradient(rgba(255, 255, 255, 0.05), rgba(49, 59, 115, 0.7));
-    /*transform: scale(1);
-    transform-origin: top;
-    position: absolute;
-    top: 12%;
-    right: 1%;*/
+    cursor: pointer;
+}
+
+.p2 .cell[id] {
+   background-color: rgba(30, 0, 79, 0.25);
 }
 
 .cell[id]:hover {

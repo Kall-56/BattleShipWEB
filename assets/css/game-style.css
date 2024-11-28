@@ -1,18 +1,7 @@
-@font-face {
-    font-family: "RocknRollOne";
-    src: url("../fonts/RocknRollOne-Regular.ttf") format("woff2");
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: "ReggaeOne";
-    src: url("../fonts/ReggaeOne-Regular.ttf") format("woff2");
-    font-weight: normal;
-    font-style: normal;
-}
+@import url('fonts.css');
 
 body {
+    width: auto;
     background-image: url("../images/background.jpg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -24,6 +13,7 @@ body {
 
 main {
     display: flex;
+    overflow: hidden;
 }
 
 .game-side {
@@ -37,48 +27,65 @@ main {
 }
 
 .user-side, .game-side {
-    height: 77.9vh;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    height: 70vh;
 }
 
 .multiplayer {
     display: none;
 }
 
-.user-name ,.user-points {
+.user-name ,.user-points ,.p2-name {
+    position: absolute;
     font-size: 130%;
-    display: inline-block;
-    margin-left: 20%;
     font-family: ReggaeOne, serif;
 }
 
-.user-points {
+.user-name {
+    left: 20%;
+}
 
+.user-points {
+    right: 15%;
+}
+
+.p2-name {
+    left: 50%;
+}
+
+section[id='turn-ui'] {
+    position: absolute;
+    left: 5%;
+    z-index: 1;
+}
+
+section[id='turn-ui'] h2 {
+    font-family: ReggaeOne, serif;
+    margin-bottom: 0;
+}
+
+.turn-list {
+    margin-top: 0;
 }
 
 .powerup-list ul{
     display: grid;
+    list-style: none;
+    padding: 0;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, auto);
 }
 
 .powerup-bt {
     font-family: RocknRollOne, serif;
-    background-color: rgba(49, 59, 115, 0.5);
-    color: aliceblue;
+    background-color: rgba(12, 27, 121, 0.25);
+    color: white;
     border: 0;
-    border-radius: 20%;
+    border-radius: 0 1em 0 1em;
 }
 
 .powerup-bt:hover {
     background-color: rgba(49, 59, 115, 0.8);
-}
-
-footer {
-    backdrop-filter: blur(150px);
-    /*background: rgba(240, 248, 255, 0.6);
-    background-size: 100% 150%;
-    background-repeat: no-repeat;
-    background-position-x: center;
-    background-position-y: 60%;*/
-    padding-bottom: 1%;
 }

@@ -11,15 +11,28 @@
         <link rel="icon" sizes="16x16 32x32 64x64" href="../boat.ico" type="image/x-icon"/>
         <link rel="stylesheet" href="../assets/css/game-style.css"/>
         <link rel="stylesheet" href="../assets/css/table-style.css"/>
+        <link rel="stylesheet" href="../assets/css/header-style.css">
+        <link rel="stylesheet" href="../assets/css/footer-style.css">
     </head>
     <body>
         <header>
             <h1>BattleShip WEB</h1>
-            <hr/>
+            <nav class="menu-button">
+                <ul>
+                    <li><a href="#"><button class="main-button" id="single-player-bt">Single Player</button></a></li>
+                    <li><a href="#"><button class="main-button" id="multiplayer-bt">MultiPlayer</button></a></li>
+                    <li><a href="#"><button class="main-button" id="tournament-bt">Tournament</button></a></li>
+                    <li><a href="../index.html"><button class="main-button" id="leaderboard-bt">Leaderboard</button></a></li>
+                    <li><a href="../index.html"><button class="main-button" id="rules-bt">Rules</button></a></li>
+                </ul>
+            </nav>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
+            </svg>
         </header>
         <main>
             <div class="game-side">
-                <section id="turn-ui" hidden>
+                <section id="turn-ui">
                     <h2>Actual Turn:</h2>
                     <ol class="turn-list">
                         <li>You</li>
@@ -27,9 +40,8 @@
                         <li class="multiplayer">Player 3</li>
                         <li class="multiplayer">Player 4</li>
                     </ol>
-                    <span class="turn-comment">Select a coordinate or use a power-up</span>
                 </section>
-                <span>P2</span>
+                <span class="p2-name">P2</span>
                 <div class="table p2">
                         <div class="cell"> </div>
                         <div class="cell">A</div>
@@ -460,7 +472,7 @@
             </div>
             <div class="user-side">
                 <span class="user-name">You</span>
-                <span class="user-points">Total Points <span id="total-points">99</span></span>
+                <span class="user-points">Total Points : <span id="total-points">000</span></span>
                 <div class="table p1">
                         <div class="cell"> </div>
                         <div class="cell">A</div>
@@ -641,6 +653,12 @@
         <footer>
             <p>No Copyright - <a href="https://www.ucab.edu.ve/">ucab.edu.ve</a></p>
             <p>by Alex Monsalve.</p>
+            <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
+            </svg>
+            <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none" style="left: 200vw;">
+                <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
+            </svg>
         </footer>
     </body>
 </html>

@@ -11,6 +11,7 @@
         <link rel="icon" sizes="16x16 32x32 64x64" href="boat.ico" type="image/x-icon"/>
         <link rel="stylesheet" href="assets/css/fonts.css">
         <link rel="stylesheet" href="index-style.css">
+        <link rel="stylesheet" href="assets/css/header-style.css">
         <link rel="stylesheet" href="assets/css/footer-style.css">
     </head>
     <body>
@@ -18,9 +19,9 @@
             <h1>BattleShip WEB</h1>
             <form method="post" action="#">
                 <label for="username">Please enter your username :
-                    <input id="username" name="username" type="text" required />
+                    <input id="username" name="username" type="text" placeholder="User1234" required />
                 </label>
-                <input type="submit" value="Submit" />
+                <input type="submit" value="( Submit )" />
             </form>
             <nav class="menu-button">
                     <ul>
@@ -31,6 +32,9 @@
                         <li><a href="#rules-header"><button class="main-button" id="rules-bt">Rules</button></a></li>
                     </ul>
             </nav>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
+            </svg>
         </header>
         <main>
             <section class="rules" id="rules-header">
@@ -148,11 +152,21 @@
             <section id="leaderboard-header">
                 <h2>Leaderboard</h2>
                 <ol>
-                    <li><span class="player-leaderboard best3" id="top-1">Player 1</span></li>
-                    <li><span class="player-leaderboard best3" id="top-2">Player 2</span></li>
-                    <li><span class="player-leaderboard best3" id="top-3">Player 3</span></li>
-                    <li><span class="player-leaderboard" id="top-4">Player 4</span></li>
-                    <li><span class="player-leaderboard" id="top-5">Player 5</span></li>
+                    <li><span class="player-leaderboard best3" id="top-1">Player 1</span>
+                        <span id="top-1-matches">Matches played: 000</span>
+                    </li>
+                    <li><span class="player-leaderboard best3" id="top-2">Player 2</span>
+                        <span id="top-2-matches">Matches played: 000</span>
+                    </li>
+                    <li><span class="player-leaderboard best3" id="top-3">Player 3</span>
+                        <span id="top-3-matches">Matches played: 000</span>
+                    </li>
+                    <li><span class="player-leaderboard" id="top-4">Player 4</span>
+                        <span id="top-4-matches">Matches played: 000</span>
+                    </li>
+                    <li><span class="player-leaderboard" id="top-5">Player 5</span>
+                        <span id="top-5-matches">Matches played: 000</span>
+                    </li>
                 </ol>
             </section>
         </main>

@@ -2,6 +2,7 @@
 
 body {
     width: auto;
+    height: auto;
     background-image: radial-gradient(99% 61.5% at 50% 89%,
     rgba(90, 102, 216, 0.62) 0%, rgba(76, 81, 191, 0) 100%),
     linear-gradient(90deg, #3182e4 0%, #398fdd 14.29%, #419bdb 28.57%,
@@ -13,62 +14,40 @@ body {
     margin: 0;
 }
 
-header {
-    background-color: white;
+.rules {
+    margin: 7% 5%;
 }
 
-h1 {
-    margin: 0;
+h2 {
     text-align: center;
     font-family: ReggaeOne, serif;
-    font-size: 2.5em;
-    color: #3182e4;
+    font-size: 1.8em;
 }
 
-form {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    color: #3182e4;
+ol {
     font-family: ReggaeOne, serif;
-    font-size: 1em;
 }
 
-form input {
-    background-color: transparent;
-    border: 0.15em rgba(49, 130, 228, 0.8) solid;
-    border-radius: 1em;
+ol p {
     font-family: RocknRollOne, serif;
-    color: #0053bd;
-    padding: 0 0.5em;
 }
 
-form input:nth-child(2) {
-    cursor: pointer;
+hr {
     border: none;
-    font-family: ReggaeOne, serif;
-    font-size: 1em;
+    background-color: white;
+    width: 90%;
+    height: 0.1em;
 }
 
-.menu-button ul {
+section[id='leaderboard-header'] ol {
     display: flex;
-    justify-content: space-evenly;
-    list-style: none;
     width: 100%;
+    margin-bottom: 5%;
     padding: 0;
-}
-
-.menu-button ul li {
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
 }
 
-.main-button {
-    cursor: pointer;
-    background-size: cover;
-    background-color: transparent;
-    border: none;
-    font-family: ReggaeOne, serif;
-    font-size: 1em;
-    color: #3182e4;
+section[id='leaderboard-header'] ol li {
+    margin: 1% 0;
 }

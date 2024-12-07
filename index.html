@@ -9,10 +9,10 @@
         <meta name="author" content="Alex Monsalve"/>
         <meta name="robots" content="noindex,follow"/>
         <link rel="icon" sizes="16x16 32x32 64x64" href="boat.ico" type="image/x-icon"/>
-        <link rel="stylesheet" href="assets/css/fonts.css">
-        <link rel="stylesheet" href="index-style.css">
-        <link rel="stylesheet" href="assets/css/header-style.css">
-        <link rel="stylesheet" href="assets/css/footer-style.css">
+        <link rel="stylesheet" href="assets/css/fonts.css"/>
+        <link rel="stylesheet" href="index-style.css"/>
+        <link rel="stylesheet" href="assets/css/header-style.css"/>
+        <link rel="stylesheet" href="assets/css/footer-style.css"/>
     </head>
     <body>
         <header>
@@ -23,10 +23,17 @@
                 </label>
                 <input type="submit" value="( Submit )" />
             </form>
-            <nav class="menu-button">
+            <nav class="menu-buttons">
                     <ul>
                         <li><a href="components/game.html"><button class="main-button" id="single-player-bt">Single Player</button></a></li>
-                        <li><a href="#"><button class="main-button" id="multiplayer-bt">MultiPlayer</button></a></li>
+                        <li><div class="main-button" id="multiplayer-bt">
+                            <span>MultiPlayer</span>
+                            <ul>
+                                <li><a href="components/game.html"><button class="sub-button" id="2-players-bt">2 Players</button></a></li>
+                                <li><a href="components/game.html"><button class="sub-button" id="3-players-bt">3 Players</button></a></li>
+                                <li><a href="components/game.html"><button class="sub-button" id="4-players-bt">4 Players</button></a></li>
+                            </ul>
+                        </div></li>
                         <li><a href="#"><button class="main-button" id="tournament-bt">Tournament</button></a></li>
                         <li><a href="#leaderboard-header"><button class="main-button" id="leaderboard-bt">Leaderboard</button></a></li>
                         <li><a href="#rules-header"><button class="main-button" id="rules-bt">Rules</button></a></li>

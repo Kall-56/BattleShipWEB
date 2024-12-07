@@ -16,34 +16,53 @@ main {
     overflow: hidden;
 }
 
-.game-side {
-    /*background-color: rgba(222, 27, 83, 0.4);*/
-    width: 60%;
-}
-
-.user-side {
-    /*background-color: rgba(27, 66, 222, 0.4);*/
-    width: 40%;
-}
-
 .user-side, .game-side {
     display: flex;
     position: relative;
-    flex-direction: column;
     height: 70vh;
 }
 
-.multiplayer {
-    display: none;
+.game-side {
+    flex-direction: row;
+    width: 60%;
 }
 
-.user-name ,.user-points ,.p2-name {
+.player-container {
+    position: relative;
+    height: 70vh;
+}
+
+.player-container:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.player-container:nth-child(2) {
+    display: none;
+    flex-direction: column;
+    width: 50%;
+}
+
+.player-container:nth-child(3) {
+    display: none;
+    flex-direction: column;
+    width: 50%;
+}
+
+.user-side {
+    flex-direction: column;
+    width: 40%;
+}
+
+#user-name ,.user-points ,#p2-name,
+#p3-name, #p4-name {
     position: absolute;
     font-size: 130%;
     font-family: ReggaeOne, serif;
 }
 
-.user-name {
+#user-name {
     left: 20%;
 }
 
@@ -51,23 +70,102 @@ main {
     right: 15%;
 }
 
-.p2-name {
+#p2-name {
     left: 50%;
 }
 
-section[id='turn-ui'] {
+#p3-name {
+    left: 50%;
+}
+
+#p4-name {
+    display: none;
+    left: 50%;
+}
+
+#turn-ui {
     position: absolute;
-    left: 5%;
+    left: 55%;
     z-index: 1;
 }
 
-section[id='turn-ui'] h2 {
+#turn-ui h2 {
     font-family: ReggaeOne, serif;
     margin-bottom: 0;
 }
 
 .turn-list {
     margin-top: 0;
+}
+
+#turn-p3 {
+    display: none;
+}
+
+#turn-p4 {
+    display: none;
+}
+
+.ship-selection {
+    position: absolute;
+    display: none;      /*Display will change to flex to be visible*/
+    flex-direction: row;
+    top: 20%;
+    left: 12.5%;
+    width: 75%;
+    height: 65%;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 1em;
+    color: #3182e4;
+    z-index: 2;
+}
+
+.ship-selection div:first-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2em;
+    width: 50%;
+    text-align: center;
+}
+
+.ship-selection>div:nth-child(2) {
+    width: 50%;
+    height: 60%;
+    margin: 0;
+    padding: 0 5%;
+}
+
+.ship {
+    margin: 0;
+    padding: 0;
+    z-index: 3;
+    pointer-events: auto;
+    cursor: grab;
+}
+
+#carrier {
+    max-width: 15rem;
+}
+
+#battleship {
+    max-width: 12rem;
+}
+
+#cruiser {
+    max-width: 9rem;
+}
+
+#submarine {
+    max-width: 9rem;
+}
+
+#destroyer {
+    max-width: 6rem;
+}
+
+.ship:active {
+    cursor: grabbing;
 }
 
 .powerup-list ul{

@@ -11,16 +11,15 @@
         <link rel="icon" sizes="16x16 32x32 64x64" href="../boat.ico" type="image/x-icon"/>
         <link rel="stylesheet" href="../assets/css/game-style.css"/>
         <link rel="stylesheet" href="../assets/css/table-style.css"/>
-        <link rel="stylesheet" href="../assets/css/header-style.css">
-        <link rel="stylesheet" href="../assets/css/footer-style.css">
+        <link rel="stylesheet" href="../assets/css/header-style.css"/>
+        <link rel="stylesheet" href="../assets/css/footer-style.css"/>
     </head>
     <body>
         <header>
             <h1>BattleShip WEB</h1>
-            <nav class="menu-button">
+            <nav class="menu-buttons">
                 <ul>
-                    <li><a href="#"><button class="main-button" id="single-player-bt">Single Player</button></a></li>
-                    <li><a href="#"><button class="main-button" id="multiplayer-bt">MultiPlayer</button></a></li>
+                    <li><a href="../index.html"><button class="main-button" id="home-bt">Home Menu</button></a></li>
                     <li><a href="#"><button class="main-button" id="tournament-bt">Tournament</button></a></li>
                     <li><a href="../index.html"><button class="main-button" id="leaderboard-bt">Leaderboard</button></a></li>
                     <li><a href="../index.html"><button class="main-button" id="rules-bt">Rules</button></a></li>
@@ -31,447 +30,438 @@
             </svg>
         </header>
         <main>
+            <aside class="ship-selection">
+                <div>
+                    <h2>Move the ships to the desired position</h2>
+                    <img class="ship" id="carrier" src="../assets/images/carrier.png" alt="carrier"/>
+                    <img class="ship" id="battleship" src="../assets/images/battleship.png" alt="battleship"/>
+                    <img class="ship" id="cruiser" src="../assets/images/cruiser.png" alt="cruiser"/>
+                    <img class="ship" id="submarine" src="../assets/images/submarine.png" alt="submarine"/>
+                    <img class="ship" id="destroyer" src="../assets/images/destroyer.png" alt="destroyer"/>
+                </div>
+            </aside>
+            <section id="turn-ui">
+                <h2>Actual Turn:</h2>
+                <ol class="turn-list">
+                    <li id="turn-user-name">You</li>
+                    <li id="turn-p2">Player 2</li>
+                    <li id="turn-p3">Player 3</li>
+                    <li id="turn-p4">Player 4</li>
+                </ol>
+            </section>
             <div class="game-side">
-                <section id="turn-ui">
-                    <h2>Actual Turn:</h2>
-                    <ol class="turn-list">
-                        <li>You</li>
-                        <li>Player 2</li>
-                        <li class="multiplayer">Player 3</li>
-                        <li class="multiplayer">Player 4</li>
-                    </ol>
-                </section>
-                <span class="p2-name">P2</span>
-                <div class="table p2">
-                        <div class="cell"> </div>
-                        <div class="cell">A</div>
-                        <div class="cell">B</div>
-                        <div class="cell">C</div>
-                        <div class="cell">D</div>
-                        <div class="cell">E</div>
-                        <div class="cell">F</div>
-                        <div class="cell">G</div>
-                        <div class="cell">H</div>
-                        <div class="cell">I</div>
-                        <div class="cell">J</div>
+                <div class="player-container">
+                    <span id="p2-name">P2</span>
+                    <div class="table p2">
+                            <div class="cell"> </div>
+                            <div class="cell">A</div>
+                            <div class="cell">B</div>
+                            <div class="cell">C</div>
+                            <div class="cell">D</div>
+                            <div class="cell">E</div>
+                            <div class="cell">F</div>
+                            <div class="cell">G</div>
+                            <div class="cell">H</div>
+                            <div class="cell">I</div>
+                            <div class="cell">J</div>
 
-                        <div class="cell" >1</div>
-                        <div class="cell" id="p2@a1">a1</div>
-                        <div class="cell" id="p2@b1">b1</div>
-                        <div class="cell" id="p2@c1">c1</div>
-                        <div class="cell" id="p2@d1">d1</div>
-                        <div class="cell" id="p2@e1">e1</div>
-                        <div class="cell" id="p2@f1">f1</div>
-                        <div class="cell" id="p2@g1">g1</div>
-                        <div class="cell" id="p2@h1">h1</div>
-                        <div class="cell" id="p2@i1">i1</div>
-                        <div class="cell" id="p2@j1">j1</div>
+                            <div class="cell" >1</div>
+                            <div class="cell" id="p2@a1"></div>
+                            <div class="cell" id="p2@b1"></div>
+                            <div class="cell" id="p2@c1"></div>
+                            <div class="cell" id="p2@d1"></div>
+                            <div class="cell" id="p2@e1"></div>
+                            <div class="cell" id="p2@f1"></div>
+                            <div class="cell" id="p2@g1"></div>
+                            <div class="cell" id="p2@h1"></div>
+                            <div class="cell" id="p2@i1"></div>
+                            <div class="cell" id="p2@j1"></div>
 
-                        <div class="cell" >2</div>
-                        <div class="cell" id="p2@a2">a2</div>
-                        <div class="cell" id="p2@b2">b2</div>
-                        <div class="cell" id="p2@c2">c2</div>
-                        <div class="cell" id="p2@d2">d2</div>
-                        <div class="cell" id="p2@e2">e2</div>
-                        <div class="cell" id="p2@f2">f2</div>
-                        <div class="cell" id="p2@g2">g2</div>
-                        <div class="cell" id="p2@h2">h2</div>
-                        <div class="cell" id="p2@i2">i2</div>
-                        <div class="cell" id="p2@j2">j2</div>
+                            <div class="cell" >2</div>
+                            <div class="cell" id="p2@a2"></div>
+                            <div class="cell" id="p2@b2"></div>
+                            <div class="cell" id="p2@c2"></div>
+                            <div class="cell" id="p2@d2"></div>
+                            <div class="cell" id="p2@e2"></div>
+                            <div class="cell" id="p2@f2"></div>
+                            <div class="cell" id="p2@g2"></div>
+                            <div class="cell" id="p2@h2"></div>
+                            <div class="cell" id="p2@i2"></div>
+                            <div class="cell" id="p2@j2"></div>
 
-                        <div class="cell" >3</div>
-                        <div class="cell" id="p2@a3">a3</div>
-                        <div class="cell" id="p2@b3">b3</div>
-                        <div class="cell" id="p2@c3">c3</div>
-                        <div class="cell" id="p2@d3">d3</div>
-                        <div class="cell" id="p2@e3">e3</div>
-                        <div class="cell" id="p2@f3">f3</div>
-                        <div class="cell" id="p2@g3">g3</div>
-                        <div class="cell" id="p2@h3">h3</div>
-                        <div class="cell" id="p2@i3">i3</div>
-                        <div class="cell" id="p2@j3">j3</div>
+                            <div class="cell" >3</div>
+                            <div class="cell" id="p2@a3"></div>
+                            <div class="cell" id="p2@b3"></div>
+                            <div class="cell" id="p2@c3"></div>
+                            <div class="cell" id="p2@d3"></div>
+                            <div class="cell" id="p2@e3"></div>
+                            <div class="cell" id="p2@f3"></div>
+                            <div class="cell" id="p2@g3"></div>
+                            <div class="cell" id="p2@h3"></div>
+                            <div class="cell" id="p2@i3"></div>
+                            <div class="cell" id="p2@j3"></div>
 
-                        <div class="cell" >4</div>
-                        <div class="cell" id="p2@a4">a4</div>
-                        <div class="cell" id="p2@b4">b4</div>
-                        <div class="cell" id="p2@c4">c4</div>
-                        <div class="cell" id="p2@d4">d4</div>
-                        <div class="cell" id="p2@e4">e4</div>
-                        <div class="cell" id="p2@f4">f4</div>
-                        <div class="cell" id="p2@g4">g4</div>
-                        <div class="cell" id="p2@h4">h4</div>
-                        <div class="cell" id="p2@i4">i4</div>
-                        <div class="cell" id="p2@j4">j4</div>
+                            <div class="cell" >4</div>
+                            <div class="cell" id="p2@a4"></div>
+                            <div class="cell" id="p2@b4"></div>
+                            <div class="cell" id="p2@c4"></div>
+                            <div class="cell" id="p2@d4"></div>
+                            <div class="cell" id="p2@e4"></div>
+                            <div class="cell" id="p2@f4"></div>
+                            <div class="cell" id="p2@g4"></div>
+                            <div class="cell" id="p2@h4"></div>
+                            <div class="cell" id="p2@i4"></div>
+                            <div class="cell" id="p2@j4"></div>
 
-                        <div class="cell" >5</div>
-                        <div class="cell" id="p2@a5">a5</div>
-                        <div class="cell" id="p2@b5">b5</div>
-                        <div class="cell" id="p2@c5">c5</div>
-                        <div class="cell" id="p2@d5">d5</div>
-                        <div class="cell" id="p2@e5">e5</div>
-                        <div class="cell" id="p2@f5">f5</div>
-                        <div class="cell" id="p2@g5">g5</div>
-                        <div class="cell" id="p2@h5">h5</div>
-                        <div class="cell" id="p2@i5">i5</div>
-                        <div class="cell" id="p2@j5">j5</div>
+                            <div class="cell" >5</div>
+                            <div class="cell" id="p2@a5"></div>
+                            <div class="cell" id="p2@b5"></div>
+                            <div class="cell" id="p2@c5"></div>
+                            <div class="cell" id="p2@d5"></div>
+                            <div class="cell" id="p2@e5"></div>
+                            <div class="cell" id="p2@f5"></div>
+                            <div class="cell" id="p2@g5"></div>
+                            <div class="cell" id="p2@h5"></div>
+                            <div class="cell" id="p2@i5"></div>
+                            <div class="cell" id="p2@j5"></div>
 
-                        <div class="cell" >6</div>
-                        <div class="cell" id="p2@a6">a6</div>
-                        <div class="cell" id="p2@b6">b6</div>
-                        <div class="cell" id="p2@c6">c6</div>
-                        <div class="cell" id="p2@d6">d6</div>
-                        <div class="cell" id="p2@e6">e6</div>
-                        <div class="cell" id="p2@f6">f6</div>
-                        <div class="cell" id="p2@g6">g6</div>
-                        <div class="cell" id="p2@h6">h6</div>
-                        <div class="cell" id="p2@i6">i6</div>
-                        <div class="cell" id="p2@j6">j6</div>
+                            <div class="cell" >6</div>
+                            <div class="cell" id="p2@a6"></div>
+                            <div class="cell" id="p2@b6"></div>
+                            <div class="cell" id="p2@c6"></div>
+                            <div class="cell" id="p2@d6"></div>
+                            <div class="cell" id="p2@e6"></div>
+                            <div class="cell" id="p2@f6"></div>
+                            <div class="cell" id="p2@g6"></div>
+                            <div class="cell" id="p2@h6"></div>
+                            <div class="cell" id="p2@i6"></div>
+                            <div class="cell" id="p2@j6"></div>
 
-                        <div class="cell" >7</div>
-                        <div class="cell" id="p2@a7">a7</div>
-                        <div class="cell" id="p2@b7">b7</div>
-                        <div class="cell" id="p2@c7">c7</div>
-                        <div class="cell" id="p2@d7">d7</div>
-                        <div class="cell" id="p2@e7">e7</div>
-                        <div class="cell" id="p2@f7">f7</div>
-                        <div class="cell" id="p2@g7">g7</div>
-                        <div class="cell" id="p2@h7">h7</div>
-                        <div class="cell" id="p2@i7">i7</div>
-                        <div class="cell" id="p2@j7">j7</div>
+                            <div class="cell" >7</div>
+                            <div class="cell" id="p2@a7"></div>
+                            <div class="cell" id="p2@b7"></div>
+                            <div class="cell" id="p2@c7"></div>
+                            <div class="cell" id="p2@d7"></div>
+                            <div class="cell" id="p2@e7"></div>
+                            <div class="cell" id="p2@f7"></div>
+                            <div class="cell" id="p2@g7"></div>
+                            <div class="cell" id="p2@h7"></div>
+                            <div class="cell" id="p2@i7"></div>
+                            <div class="cell" id="p2@j7"></div>
 
-                        <div class="cell" >8</div>
-                        <div class="cell" id="p2@a8">a8</div>
-                        <div class="cell" id="p2@b8">b8</div>
-                        <div class="cell" id="p2@c8">c8</div>
-                        <div class="cell" id="p2@d8">d8</div>
-                        <div class="cell" id="p2@e8">e8</div>
-                        <div class="cell" id="p2@f8">f8</div>
-                        <div class="cell" id="p2@g8">g8</div>
-                        <div class="cell" id="p2@h8">h8</div>
-                        <div class="cell" id="p2@i8">i8</div>
-                        <div class="cell" id="p2@j8">j8</div>
+                            <div class="cell" >8</div>
+                            <div class="cell" id="p2@a8"></div>
+                            <div class="cell" id="p2@b8"></div>
+                            <div class="cell" id="p2@c8"></div>
+                            <div class="cell" id="p2@d8"></div>
+                            <div class="cell" id="p2@e8"></div>
+                            <div class="cell" id="p2@f8"></div>
+                            <div class="cell" id="p2@g8"></div>
+                            <div class="cell" id="p2@h8"></div>
+                            <div class="cell" id="p2@i8"></div>
+                            <div class="cell" id="p2@j8"></div>
 
-                        <div class="cell" >9</div>
-                        <div class="cell" id="p2@a9">a9</div>
-                        <div class="cell" id="p2@b9">b9</div>
-                        <div class="cell" id="p2@c9">c9</div>
-                        <div class="cell" id="p2@d9">d9</div>
-                        <div class="cell" id="p2@e9">e9</div>
-                        <div class="cell" id="p2@f9">f9</div>
-                        <div class="cell" id="p2@g9">g9</div>
-                        <div class="cell" id="p2@h9">h9</div>
-                        <div class="cell" id="p2@i9">i9</div>
-                        <div class="cell" id="p2@j9">j9</div>
+                            <div class="cell" >9</div>
+                            <div class="cell" id="p2@a9"></div>
+                            <div class="cell" id="p2@b9"></div>
+                            <div class="cell" id="p2@c9"></div>
+                            <div class="cell" id="p2@d9"></div>
+                            <div class="cell" id="p2@e9"></div>
+                            <div class="cell" id="p2@f9"></div>
+                            <div class="cell" id="p2@g9"></div>
+                            <div class="cell" id="p2@h9"></div>
+                            <div class="cell" id="p2@i9"></div>
+                            <div class="cell" id="p2@j9"></div>
 
-                        <div class="cell" >10</div>
-                        <div class="cell" id="p2@a10">a10</div>
-                        <div class="cell" id="p2@b10">b10</div>
-                        <div class="cell" id="p2@c10">c10</div>
-                        <div class="cell" id="p2@d10">d10</div>
-                        <div class="cell" id="p2@e10">e10</div>
-                        <div class="cell" id="p2@f10">f10</div>
-                        <div class="cell" id="p2@g10">g10</div>
-                        <div class="cell" id="p2@h10">h10</div>
-                        <div class="cell" id="p2@i10">i10</div>
-                        <div class="cell" id="p2@j10">j10</div>
-                    </div>
-                <div class="multiplayer">
-                        <span>P3</span>
-                        <div class="table p3">
-                            <div class="row">
-                                <div class="cell"> </div>
-                                <div class="cell">A</div>
-                                <div class="cell">B</div>
-                                <div class="cell">C</div>
-                                <div class="cell">D</div>
-                                <div class="cell">E</div>
-                                <div class="cell">F</div>
-                                <div class="cell">G</div>
-                                <div class="cell">H</div>
-                                <div class="cell">I</div>
-                                <div class="cell">J</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >1</div>
-                                <div class="cell" id="p3@a1">a1</div>
-                                <div class="cell" id="p3@b1">b1</div>
-                                <div class="cell" id="p3@c1">c1</div>
-                                <div class="cell" id="p3@d1">d1</div>
-                                <div class="cell" id="p3@e1">e1</div>
-                                <div class="cell" id="p3@f1">f1</div>
-                                <div class="cell" id="p3@g1">g1</div>
-                                <div class="cell" id="p3@h1">h1</div>
-                                <div class="cell" id="p3@i1">i1</div>
-                                <div class="cell" id="p3@j1">j1</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >2</div>
-                                <div class="cell" id="p3@a2">a2</div>
-                                <div class="cell" id="p3@b2">b2</div>
-                                <div class="cell" id="p3@c2">c2</div>
-                                <div class="cell" id="p3@d2">d2</div>
-                                <div class="cell" id="p3@e2">e2</div>
-                                <div class="cell" id="p3@f2">f2</div>
-                                <div class="cell" id="p3@g2">g2</div>
-                                <div class="cell" id="p3@h2">h2</div>
-                                <div class="cell" id="p3@i2">i2</div>
-                                <div class="cell" id="p3@j2">j2</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >3</div>
-                                <div class="cell" id="p3@a3">a3</div>
-                                <div class="cell" id="p3@b3">b3</div>
-                                <div class="cell" id="p3@c3">c3</div>
-                                <div class="cell" id="p3@d3">d3</div>
-                                <div class="cell" id="p3@e3">e3</div>
-                                <div class="cell" id="p3@f3">f3</div>
-                                <div class="cell" id="p3@g3">g3</div>
-                                <div class="cell" id="p3@h3">h3</div>
-                                <div class="cell" id="p3@i3">i3</div>
-                                <div class="cell" id="p3@j3">j3</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >4</div>
-                                <div class="cell" id="p3@a4">a4</div>
-                                <div class="cell" id="p3@b4">b4</div>
-                                <div class="cell" id="p3@c4">c4</div>
-                                <div class="cell" id="p3@d4">d4</div>
-                                <div class="cell" id="p3@e4">e4</div>
-                                <div class="cell" id="p3@f4">f4</div>
-                                <div class="cell" id="p3@g4">g4</div>
-                                <div class="cell" id="p3@h4">h4</div>
-                                <div class="cell" id="p3@i4">i4</div>
-                                <div class="cell" id="p3@j4">j4</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >5</div>
-                                <div class="cell" id="p3@a5">a5</div>
-                                <div class="cell" id="p3@b5">b5</div>
-                                <div class="cell" id="p3@c5">c5</div>
-                                <div class="cell" id="p3@d5">d5</div>
-                                <div class="cell" id="p3@e5">e5</div>
-                                <div class="cell" id="p3@f5">f5</div>
-                                <div class="cell" id="p3@g5">g5</div>
-                                <div class="cell" id="p3@h5">h5</div>
-                                <div class="cell" id="p3@i5">i5</div>
-                                <div class="cell" id="p3@j5">j5</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >6</div>
-                                <div class="cell" id="p3@a6">a6</div>
-                                <div class="cell" id="p3@b6">b6</div>
-                                <div class="cell" id="p3@c6">c6</div>
-                                <div class="cell" id="p3@d6">d6</div>
-                                <div class="cell" id="p3@e6">e6</div>
-                                <div class="cell" id="p3@f6">f6</div>
-                                <div class="cell" id="p3@g6">g6</div>
-                                <div class="cell" id="p3@h6">h6</div>
-                                <div class="cell" id="p3@i6">i6</div>
-                                <div class="cell" id="p3@j6">j6</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >7</div>
-                                <div class="cell" id="p3@a7">a7</div>
-                                <div class="cell" id="p3@b7">b7</div>
-                                <div class="cell" id="p3@c7">c7</div>
-                                <div class="cell" id="p3@d7">d7</div>
-                                <div class="cell" id="p3@e7">e7</div>
-                                <div class="cell" id="p3@f7">f7</div>
-                                <div class="cell" id="p3@g7">g7</div>
-                                <div class="cell" id="p3@h7">h7</div>
-                                <div class="cell" id="p3@i7">i7</div>
-                                <div class="cell" id="p3@j7">j7</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >8</div>
-                                <div class="cell" id="p3@a8">a8</div>
-                                <div class="cell" id="p3@b8">b8</div>
-                                <div class="cell" id="p3@c8">c8</div>
-                                <div class="cell" id="p3@d8">d8</div>
-                                <div class="cell" id="p3@e8">e8</div>
-                                <div class="cell" id="p3@f8">f8</div>
-                                <div class="cell" id="p3@g8">g8</div>
-                                <div class="cell" id="p3@h8">h8</div>
-                                <div class="cell" id="p3@i8">i8</div>
-                                <div class="cell" id="p3@j8">j8</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >9</div>
-                                <div class="cell" id="p3@a9">a9</div>
-                                <div class="cell" id="p3@b9">b9</div>
-                                <div class="cell" id="p3@c9">c9</div>
-                                <div class="cell" id="p3@d9">d9</div>
-                                <div class="cell" id="p3@e9">e9</div>
-                                <div class="cell" id="p3@f9">f9</div>
-                                <div class="cell" id="p3@g9">g9</div>
-                                <div class="cell" id="p3@h9">h9</div>
-                                <div class="cell" id="p3@i9">i9</div>
-                                <div class="cell" id="p3@j9">j9</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >10</div>
-                                <div class="cell" id="p3@a10">a10</div>
-                                <div class="cell" id="p3@b10">b10</div>
-                                <div class="cell" id="p3@c10">c10</div>
-                                <div class="cell" id="p3@d10">d10</div>
-                                <div class="cell" id="p3@e10">e10</div>
-                                <div class="cell" id="p3@f10">f10</div>
-                                <div class="cell" id="p3@g10">g10</div>
-                                <div class="cell" id="p3@h10">h10</div>
-                                <div class="cell" id="p3@i10">i10</div>
-                                <div class="cell" id="p3@j10">j10</div>
-                            </div>
+                            <div class="cell" >10</div>
+                            <div class="cell" id="p2@a10"></div>
+                            <div class="cell" id="p2@b10"></div>
+                            <div class="cell" id="p2@c10"></div>
+                            <div class="cell" id="p2@d10"></div>
+                            <div class="cell" id="p2@e10"></div>
+                            <div class="cell" id="p2@f10"></div>
+                            <div class="cell" id="p2@g10"></div>
+                            <div class="cell" id="p2@h10"></div>
+                            <div class="cell" id="p2@i10"></div>
+                            <div class="cell" id="p2@j10"></div>
                         </div>
-                        <span>P4</span>
-                        <div class="table p4">
-                            <div class="row">
-                                <div class="cell"> </div>
-                                <div class="cell">A</div>
-                                <div class="cell">B</div>
-                                <div class="cell">C</div>
-                                <div class="cell">D</div>
-                                <div class="cell">E</div>
-                                <div class="cell">F</div>
-                                <div class="cell">G</div>
-                                <div class="cell">H</div>
-                                <div class="cell">I</div>
-                                <div class="cell">J</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >1</div>
-                                <div class="cell" id="p4@a1">a1</div>
-                                <div class="cell" id="p4@b1">b1</div>
-                                <div class="cell" id="p4@c1">c1</div>
-                                <div class="cell" id="p4@d1">d1</div>
-                                <div class="cell" id="p4@e1">e1</div>
-                                <div class="cell" id="p4@f1">f1</div>
-                                <div class="cell" id="p4@g1">g1</div>
-                                <div class="cell" id="p4@h1">h1</div>
-                                <div class="cell" id="p4@i1">i1</div>
-                                <div class="cell" id="p4@j1">j1</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >2</div>
-                                <div class="cell" id="p4@a2">a2</div>
-                                <div class="cell" id="p4@b2">b2</div>
-                                <div class="cell" id="p4@c2">c2</div>
-                                <div class="cell" id="p4@d2">d2</div>
-                                <div class="cell" id="p4@e2">e2</div>
-                                <div class="cell" id="p4@f2">f2</div>
-                                <div class="cell" id="p4@g2">g2</div>
-                                <div class="cell" id="p4@h2">h2</div>
-                                <div class="cell" id="p4@i2">i2</div>
-                                <div class="cell" id="p4@j2">j2</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >3</div>
-                                <div class="cell" id="p4@a3">a3</div>
-                                <div class="cell" id="p4@b3">b3</div>
-                                <div class="cell" id="p4@c3">c3</div>
-                                <div class="cell" id="p4@d3">d3</div>
-                                <div class="cell" id="p4@e3">e3</div>
-                                <div class="cell" id="p4@f3">f3</div>
-                                <div class="cell" id="p4@g3">g3</div>
-                                <div class="cell" id="p4@h3">h3</div>
-                                <div class="cell" id="p4@i3">i3</div>
-                                <div class="cell" id="p4@j3">j3</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >4</div>
-                                <div class="cell" id="p4@a4">a4</div>
-                                <div class="cell" id="p4@b4">b4</div>
-                                <div class="cell" id="p4@c4">c4</div>
-                                <div class="cell" id="p4@d4">d4</div>
-                                <div class="cell" id="p4@e4">e4</div>
-                                <div class="cell" id="p4@f4">f4</div>
-                                <div class="cell" id="p4@g4">g4</div>
-                                <div class="cell" id="p4@h4">h4</div>
-                                <div class="cell" id="p4@i4">i4</div>
-                                <div class="cell" id="p4@j4">j4</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >5</div>
-                                <div class="cell" id="p4@a5">a5</div>
-                                <div class="cell" id="p4@b5">b5</div>
-                                <div class="cell" id="p4@c5">c5</div>
-                                <div class="cell" id="p4@d5">d5</div>
-                                <div class="cell" id="p4@e5">e5</div>
-                                <div class="cell" id="p4@f5">f5</div>
-                                <div class="cell" id="p4@g5">g5</div>
-                                <div class="cell" id="p4@h5">h5</div>
-                                <div class="cell" id="p4@i5">i5</div>
-                                <div class="cell" id="p4@j5">j5</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >6</div>
-                                <div class="cell" id="p4@a6">a6</div>
-                                <div class="cell" id="p4@b6">b6</div>
-                                <div class="cell" id="p4@c6">c6</div>
-                                <div class="cell" id="p4@d6">d6</div>
-                                <div class="cell" id="p4@e6">e6</div>
-                                <div class="cell" id="p4@f6">f6</div>
-                                <div class="cell" id="p4@g6">g6</div>
-                                <div class="cell" id="p4@h6">h6</div>
-                                <div class="cell" id="p4@i6">i6</div>
-                                <div class="cell" id="p4@j6">j6</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >7</div>
-                                <div class="cell" id="p4@a7">a7</div>
-                                <div class="cell" id="p4@b7">b7</div>
-                                <div class="cell" id="p4@c7">c7</div>
-                                <div class="cell" id="p4@d7">d7</div>
-                                <div class="cell" id="p4@e7">e7</div>
-                                <div class="cell" id="p4@f7">f7</div>
-                                <div class="cell" id="p4@g7">g7</div>
-                                <div class="cell" id="p4@h7">h7</div>
-                                <div class="cell" id="p4@i7">i7</div>
-                                <div class="cell" id="p4@j7">j7</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >8</div>
-                                <div class="cell" id="p4@a8">a8</div>
-                                <div class="cell" id="p4@b8">b8</div>
-                                <div class="cell" id="p4@c8">c8</div>
-                                <div class="cell" id="p4@d8">d8</div>
-                                <div class="cell" id="p4@e8">e8</div>
-                                <div class="cell" id="p4@f8">f8</div>
-                                <div class="cell" id="p4@g8">g8</div>
-                                <div class="cell" id="p4@h8">h8</div>
-                                <div class="cell" id="p4@i8">i8</div>
-                                <div class="cell" id="p4@j8">j8</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >9</div>
-                                <div class="cell" id="p4@a9">a9</div>
-                                <div class="cell" id="p4@b9">b9</div>
-                                <div class="cell" id="p4@c9">c9</div>
-                                <div class="cell" id="p4@d9">d9</div>
-                                <div class="cell" id="p4@e9">e9</div>
-                                <div class="cell" id="p4@f9">f9</div>
-                                <div class="cell" id="p4@g9">g9</div>
-                                <div class="cell" id="p4@h9">h9</div>
-                                <div class="cell" id="p4@i9">i9</div>
-                                <div class="cell" id="p4@j9">j9</div>
-                            </div>
-                            <div class="row">
-                                <div class="cell" >10</div>
-                                <div class="cell" id="p4@a10">a10</div>
-                                <div class="cell" id="p4@b10">b10</div>
-                                <div class="cell" id="p4@c10">c10</div>
-                                <div class="cell" id="p4@d10">d10</div>
-                                <div class="cell" id="p4@e10">e10</div>
-                                <div class="cell" id="p4@f10">f10</div>
-                                <div class="cell" id="p4@g10">g10</div>
-                                <div class="cell" id="p4@h10">h10</div>
-                                <div class="cell" id="p4@i10">i10</div>
-                                <div class="cell" id="p4@j10">j10</div>
-                            </div>
-                        </div>
+                </div>
+                <div class="player-container">
+                    <span id="p3-name">P3</span>
+                    <div class="table p3">
+                            <div class="cell"> </div>
+                            <div class="cell">A</div>
+                            <div class="cell">B</div>
+                            <div class="cell">C</div>
+                            <div class="cell">D</div>
+                            <div class="cell">E</div>
+                            <div class="cell">F</div>
+                            <div class="cell">G</div>
+                            <div class="cell">H</div>
+                            <div class="cell">I</div>
+                            <div class="cell">J</div>
+
+                            <div class="cell" >1</div>
+                            <div class="cell" id="p3@a1"></div>
+                            <div class="cell" id="p3@b1"></div>
+                            <div class="cell" id="p3@c1"></div>
+                            <div class="cell" id="p3@d1"></div>
+                            <div class="cell" id="p3@e1"></div>
+                            <div class="cell" id="p3@f1"></div>
+                            <div class="cell" id="p3@g1"></div>
+                            <div class="cell" id="p3@h1"></div>
+                            <div class="cell" id="p3@i1"></div>
+                            <div class="cell" id="p3@j1"></div>
+
+                            <div class="cell" >2</div>
+                            <div class="cell" id="p3@a2"></div>
+                            <div class="cell" id="p3@b2"></div>
+                            <div class="cell" id="p3@c2"></div>
+                            <div class="cell" id="p3@d2"></div>
+                            <div class="cell" id="p3@e2"></div>
+                            <div class="cell" id="p3@f2"></div>
+                            <div class="cell" id="p3@g2"></div>
+                            <div class="cell" id="p3@h2"></div>
+                            <div class="cell" id="p3@i2"></div>
+                            <div class="cell" id="p3@j2"></div>
+
+                            <div class="cell" >3</div>
+                            <div class="cell" id="p3@a3"></div>
+                            <div class="cell" id="p3@b3"></div>
+                            <div class="cell" id="p3@c3"></div>
+                            <div class="cell" id="p3@d3"></div>
+                            <div class="cell" id="p3@e3"></div>
+                            <div class="cell" id="p3@f3"></div>
+                            <div class="cell" id="p3@g3"></div>
+                            <div class="cell" id="p3@h3"></div>
+                            <div class="cell" id="p3@i3"></div>
+                            <div class="cell" id="p3@j3"></div>
+
+                            <div class="cell" >4</div>
+                            <div class="cell" id="p3@a4"></div>
+                            <div class="cell" id="p3@b4"></div>
+                            <div class="cell" id="p3@c4"></div>
+                            <div class="cell" id="p3@d4"></div>
+                            <div class="cell" id="p3@e4"></div>
+                            <div class="cell" id="p3@f4"></div>
+                            <div class="cell" id="p3@g4"></div>
+                            <div class="cell" id="p3@h4"></div>
+                            <div class="cell" id="p3@i4"></div>
+                            <div class="cell" id="p3@j4"></div>
+
+                            <div class="cell" >5</div>
+                            <div class="cell" id="p3@a5"></div>
+                            <div class="cell" id="p3@b5"></div>
+                            <div class="cell" id="p3@c5"></div>
+                            <div class="cell" id="p3@d5"></div>
+                            <div class="cell" id="p3@e5"></div>
+                            <div class="cell" id="p3@f5"></div>
+                            <div class="cell" id="p3@g5"></div>
+                            <div class="cell" id="p3@h5"></div>
+                            <div class="cell" id="p3@i5"></div>
+                            <div class="cell" id="p3@j5"></div>
+
+                            <div class="cell" >6</div>
+                            <div class="cell" id="p3@a6"></div>
+                            <div class="cell" id="p3@b6"></div>
+                            <div class="cell" id="p3@c6"></div>
+                            <div class="cell" id="p3@d6"></div>
+                            <div class="cell" id="p3@e6"></div>
+                            <div class="cell" id="p3@f6"></div>
+                            <div class="cell" id="p3@g6"></div>
+                            <div class="cell" id="p3@h6"></div>
+                            <div class="cell" id="p3@i6"></div>
+                            <div class="cell" id="p3@j6"></div>
+
+                            <div class="cell" >7</div>
+                            <div class="cell" id="p3@a7"></div>
+                            <div class="cell" id="p3@b7"></div>
+                            <div class="cell" id="p3@c7"></div>
+                            <div class="cell" id="p3@d7"></div>
+                            <div class="cell" id="p3@e7"></div>
+                            <div class="cell" id="p3@f7"></div>
+                            <div class="cell" id="p3@g7"></div>
+                            <div class="cell" id="p3@h7"></div>
+                            <div class="cell" id="p3@i7"></div>
+                            <div class="cell" id="p3@j7"></div>
+
+                            <div class="cell" >8</div>
+                            <div class="cell" id="p3@a8"></div>
+                            <div class="cell" id="p3@b8"></div>
+                            <div class="cell" id="p3@c8"></div>
+                            <div class="cell" id="p3@d8"></div>
+                            <div class="cell" id="p3@e8"></div>
+                            <div class="cell" id="p3@f8"></div>
+                            <div class="cell" id="p3@g8"></div>
+                            <div class="cell" id="p3@h8"></div>
+                            <div class="cell" id="p3@i8"></div>
+                            <div class="cell" id="p3@j8"></div>
+
+                            <div class="cell" >9</div>
+                            <div class="cell" id="p3@a9"></div>
+                            <div class="cell" id="p3@b9"></div>
+                            <div class="cell" id="p3@c9"></div>
+                            <div class="cell" id="p3@d9"></div>
+                            <div class="cell" id="p3@e9"></div>
+                            <div class="cell" id="p3@f9"></div>
+                            <div class="cell" id="p3@g9"></div>
+                            <div class="cell" id="p3@h9"></div>
+                            <div class="cell" id="p3@i9"></div>
+                            <div class="cell" id="p3@j9"></div>
+
+                            <div class="cell" >10</div>
+                            <div class="cell" id="p3@a10"></div>
+                            <div class="cell" id="p3@b10"></div>
+                            <div class="cell" id="p3@c10"></div>
+                            <div class="cell" id="p3@d10"></div>
+                            <div class="cell" id="p3@e10"></div>
+                            <div class="cell" id="p3@f10"></div>
+                            <div class="cell" id="p3@g10"></div>
+                            <div class="cell" id="p3@h10"></div>
+                            <div class="cell" id="p3@i10"></div>
+                            <div class="cell" id="p3@j10"></div>
                     </div>
+                </div>
+                <div class="player-container">
+                    <span id="p4-name">P4</span>
+                    <div class="table p4">
+
+                            <div class="cell"> </div>
+                            <div class="cell">A</div>
+                            <div class="cell">B</div>
+                            <div class="cell">C</div>
+                            <div class="cell">D</div>
+                            <div class="cell">E</div>
+                            <div class="cell">F</div>
+                            <div class="cell">G</div>
+                            <div class="cell">H</div>
+                            <div class="cell">I</div>
+                            <div class="cell">J</div>
+
+                            <div class="cell" >1</div>
+                            <div class="cell" id="p4@a1"></div>
+                            <div class="cell" id="p4@b1"></div>
+                            <div class="cell" id="p4@c1"></div>
+                            <div class="cell" id="p4@d1"></div>
+                            <div class="cell" id="p4@e1"></div>
+                            <div class="cell" id="p4@f1"></div>
+                            <div class="cell" id="p4@g1"></div>
+                            <div class="cell" id="p4@h1"></div>
+                            <div class="cell" id="p4@i1"></div>
+                            <div class="cell" id="p4@j1"></div>
+
+                            <div class="cell" >2</div>
+                            <div class="cell" id="p4@a2"></div>
+                            <div class="cell" id="p4@b2"></div>
+                            <div class="cell" id="p4@c2"></div>
+                            <div class="cell" id="p4@d2"></div>
+                            <div class="cell" id="p4@e2"></div>
+                            <div class="cell" id="p4@f2"></div>
+                            <div class="cell" id="p4@g2"></div>
+                            <div class="cell" id="p4@h2"></div>
+                            <div class="cell" id="p4@i2"></div>
+                            <div class="cell" id="p4@j2"></div>
+
+                            <div class="cell" >3</div>
+                            <div class="cell" id="p4@a3"></div>
+                            <div class="cell" id="p4@b3"></div>
+                            <div class="cell" id="p4@c3"></div>
+                            <div class="cell" id="p4@d3"></div>
+                            <div class="cell" id="p4@e3"></div>
+                            <div class="cell" id="p4@f3"></div>
+                            <div class="cell" id="p4@g3"></div>
+                            <div class="cell" id="p4@h3"></div>
+                            <div class="cell" id="p4@i3"></div>
+                            <div class="cell" id="p4@j3"></div>
+
+                            <div class="cell" >4</div>
+                            <div class="cell" id="p4@a4"></div>
+                            <div class="cell" id="p4@b4"></div>
+                            <div class="cell" id="p4@c4"></div>
+                            <div class="cell" id="p4@d4"></div>
+                            <div class="cell" id="p4@e4"></div>
+                            <div class="cell" id="p4@f4"></div>
+                            <div class="cell" id="p4@g4"></div>
+                            <div class="cell" id="p4@h4"></div>
+                            <div class="cell" id="p4@i4"></div>
+                            <div class="cell" id="p4@j4"></div>
+
+                            <div class="cell" >5</div>
+                            <div class="cell" id="p4@a5"></div>
+                            <div class="cell" id="p4@b5"></div>
+                            <div class="cell" id="p4@c5"></div>
+                            <div class="cell" id="p4@d5"></div>
+                            <div class="cell" id="p4@e5"></div>
+                            <div class="cell" id="p4@f5"></div>
+                            <div class="cell" id="p4@g5"></div>
+                            <div class="cell" id="p4@h5"></div>
+                            <div class="cell" id="p4@i5"></div>
+                            <div class="cell" id="p4@j5"></div>
+
+                            <div class="cell" >6</div>
+                            <div class="cell" id="p4@a6"></div>
+                            <div class="cell" id="p4@b6"></div>
+                            <div class="cell" id="p4@c6"></div>
+                            <div class="cell" id="p4@d6"></div>
+                            <div class="cell" id="p4@e6"></div>
+                            <div class="cell" id="p4@f6"></div>
+                            <div class="cell" id="p4@g6"></div>
+                            <div class="cell" id="p4@h6"></div>
+                            <div class="cell" id="p4@i6"></div>
+                            <div class="cell" id="p4@j6"></div>
+
+                            <div class="cell" >7</div>
+                            <div class="cell" id="p4@a7"></div>
+                            <div class="cell" id="p4@b7"></div>
+                            <div class="cell" id="p4@c7"></div>
+                            <div class="cell" id="p4@d7"></div>
+                            <div class="cell" id="p4@e7"></div>
+                            <div class="cell" id="p4@f7"></div>
+                            <div class="cell" id="p4@g7"></div>
+                            <div class="cell" id="p4@h7"></div>
+                            <div class="cell" id="p4@i7"></div>
+                            <div class="cell" id="p4@j7"></div>
+
+                            <div class="cell" >8</div>
+                            <div class="cell" id="p4@a8"></div>
+                            <div class="cell" id="p4@b8"></div>
+                            <div class="cell" id="p4@c8"></div>
+                            <div class="cell" id="p4@d8"></div>
+                            <div class="cell" id="p4@e8"></div>
+                            <div class="cell" id="p4@f8"></div>
+                            <div class="cell" id="p4@g8"></div>
+                            <div class="cell" id="p4@h8"></div>
+                            <div class="cell" id="p4@i8"></div>
+                            <div class="cell" id="p4@j8"></div>
+
+                            <div class="cell" >9</div>
+                            <div class="cell" id="p4@a9"></div>
+                            <div class="cell" id="p4@b9"></div>
+                            <div class="cell" id="p4@c9"></div>
+                            <div class="cell" id="p4@d9"></div>
+                            <div class="cell" id="p4@e9"></div>
+                            <div class="cell" id="p4@f9"></div>
+                            <div class="cell" id="p4@g9"></div>
+                            <div class="cell" id="p4@h9"></div>
+                            <div class="cell" id="p4@i9"></div>
+                            <div class="cell" id="p4@j9"></div>
+
+                            <div class="cell" >10</div>
+                            <div class="cell" id="p4@a10"></div>
+                            <div class="cell" id="p4@b10"></div>
+                            <div class="cell" id="p4@c10"></div>
+                            <div class="cell" id="p4@d10"></div>
+                            <div class="cell" id="p4@e10"></div>
+                            <div class="cell" id="p4@f10"></div>
+                            <div class="cell" id="p4@g10"></div>
+                            <div class="cell" id="p4@h10"></div>
+                            <div class="cell" id="p4@i10"></div>
+                            <div class="cell" id="p4@j10"></div>
+                        </div>
+                </div>
             </div>
             <div class="user-side">
-                <span class="user-name">You</span>
+                <span id="user-name">You</span>
                 <span class="user-points">Total Points : <span id="total-points">000</span></span>
                 <div class="table p1">
                         <div class="cell"> </div>
@@ -487,124 +477,124 @@
                         <div class="cell">J</div>
 
                         <div class="cell" >1</div>
-                        <div class="cell" id="p1@a1">a1</div>
-                        <div class="cell" id="p1@b1">b1</div>
-                        <div class="cell" id="p1@c1">c1</div>
-                        <div class="cell" id="p1@d1">d1</div>
-                        <div class="cell" id="p1@e1">e1</div>
-                        <div class="cell" id="p1@f1">f1</div>
-                        <div class="cell" id="p1@g1">g1</div>
-                        <div class="cell" id="p1@h1">h1</div>
-                        <div class="cell" id="p1@i1">i1</div>
-                        <div class="cell" id="p1@j1">j1</div>
+                        <div class="cell" id="p1@a1"></div>
+                        <div class="cell" id="p1@b1"></div>
+                        <div class="cell" id="p1@c1"></div>
+                        <div class="cell" id="p1@d1"></div>
+                        <div class="cell" id="p1@e1"></div>
+                        <div class="cell" id="p1@f1"></div>
+                        <div class="cell" id="p1@g1"></div>
+                        <div class="cell" id="p1@h1"></div>
+                        <div class="cell" id="p1@i1"></div>
+                        <div class="cell" id="p1@j1"></div>
 
                         <div class="cell" >2</div>
-                        <div class="cell" id="p1@a2">a2</div>
-                        <div class="cell" id="p1@b2">b2</div>
-                        <div class="cell" id="p1@c2">c2</div>
-                        <div class="cell" id="p1@d2">d2</div>
-                        <div class="cell" id="p1@e2">e2</div>
-                        <div class="cell" id="p1@f2">f2</div>
-                        <div class="cell" id="p1@g2">g2</div>
-                        <div class="cell" id="p1@h2">h2</div>
-                        <div class="cell" id="p1@i2">i2</div>
-                        <div class="cell" id="p1@j2">j2</div>
+                        <div class="cell" id="p1@a2"></div>
+                        <div class="cell" id="p1@b2"></div>
+                        <div class="cell" id="p1@c2"></div>
+                        <div class="cell" id="p1@d2"></div>
+                        <div class="cell" id="p1@e2"></div>
+                        <div class="cell" id="p1@f2"></div>
+                        <div class="cell" id="p1@g2"></div>
+                        <div class="cell" id="p1@h2"></div>
+                        <div class="cell" id="p1@i2"></div>
+                        <div class="cell" id="p1@j2"></div>
 
                         <div class="cell" >3</div>
-                        <div class="cell" id="p1@a3">a3</div>
-                        <div class="cell" id="p1@b3">b3</div>
-                        <div class="cell" id="p1@c3">c3</div>
-                        <div class="cell" id="p1@d3">d3</div>
-                        <div class="cell" id="p1@e3">e3</div>
-                        <div class="cell" id="p1@f3">f3</div>
-                        <div class="cell" id="p1@g3">g3</div>
-                        <div class="cell" id="p1@h3">h3</div>
-                        <div class="cell" id="p1@i3">i3</div>
-                        <div class="cell" id="p1@j3">j3</div>
+                        <div class="cell" id="p1@a3"></div>
+                        <div class="cell" id="p1@b3"></div>
+                        <div class="cell" id="p1@c3"></div>
+                        <div class="cell" id="p1@d3"></div>
+                        <div class="cell" id="p1@e3"></div>
+                        <div class="cell" id="p1@f3"></div>
+                        <div class="cell" id="p1@g3"></div>
+                        <div class="cell" id="p1@h3"></div>
+                        <div class="cell" id="p1@i3"></div>
+                        <div class="cell" id="p1@j3"></div>
 
                         <div class="cell" >4</div>
-                        <div class="cell" id="p1@a4">a4</div>
-                        <div class="cell" id="p1@b4">b4</div>
-                        <div class="cell" id="p1@c4">c4</div>
-                        <div class="cell" id="p1@d4">d4</div>
-                        <div class="cell" id="p1@e4">e4</div>
-                        <div class="cell" id="p1@f4">f4</div>
-                        <div class="cell" id="p1@g4">g4</div>
-                        <div class="cell" id="p1@h4">h4</div>
-                        <div class="cell" id="p1@i4">i4</div>
-                        <div class="cell" id="p1@j4">j4</div>
+                        <div class="cell" id="p1@a4"></div>
+                        <div class="cell" id="p1@b4"></div>
+                        <div class="cell" id="p1@c4"></div>
+                        <div class="cell" id="p1@d4"></div>
+                        <div class="cell" id="p1@e4"></div>
+                        <div class="cell" id="p1@f4"></div>
+                        <div class="cell" id="p1@g4"></div>
+                        <div class="cell" id="p1@h4"></div>
+                        <div class="cell" id="p1@i4"></div>
+                        <div class="cell" id="p1@j4"></div>
 
                         <div class="cell" >5</div>
-                        <div class="cell" id="p1@a5">a5</div>
-                        <div class="cell" id="p1@b5">b5</div>
-                        <div class="cell" id="p1@c5">c5</div>
-                        <div class="cell" id="p1@d5">d5</div>
-                        <div class="cell" id="p1@e5">e5</div>
-                        <div class="cell" id="p1@f5">f5</div>
-                        <div class="cell" id="p1@g5">g5</div>
-                        <div class="cell" id="p1@h5">h5</div>
-                        <div class="cell" id="p1@i5">i5</div>
-                        <div class="cell" id="p1@j5">j5</div>
+                        <div class="cell" id="p1@a5"></div>
+                        <div class="cell" id="p1@b5"></div>
+                        <div class="cell" id="p1@c5"></div>
+                        <div class="cell" id="p1@d5"></div>
+                        <div class="cell" id="p1@e5"></div>
+                        <div class="cell" id="p1@f5"></div>
+                        <div class="cell" id="p1@g5"></div>
+                        <div class="cell" id="p1@h5"></div>
+                        <div class="cell" id="p1@i5"></div>
+                        <div class="cell" id="p1@j5"></div>
 
                         <div class="cell" >6</div>
-                        <div class="cell" id="p1@a6">a6</div>
-                        <div class="cell" id="p1@b6">b6</div>
-                        <div class="cell" id="p1@c6">c6</div>
-                        <div class="cell" id="p1@d6">d6</div>
-                        <div class="cell" id="p1@e6">e6</div>
-                        <div class="cell" id="p1@f6">f6</div>
-                        <div class="cell" id="p1@g6">g6</div>
-                        <div class="cell" id="p1@h6">h6</div>
-                        <div class="cell" id="p1@i6">i6</div>
-                        <div class="cell" id="p1@j6">j6</div>
+                        <div class="cell" id="p1@a6"></div>
+                        <div class="cell" id="p1@b6"></div>
+                        <div class="cell" id="p1@c6"></div>
+                        <div class="cell" id="p1@d6"></div>
+                        <div class="cell" id="p1@e6"></div>
+                        <div class="cell" id="p1@f6"></div>
+                        <div class="cell" id="p1@g6"></div>
+                        <div class="cell" id="p1@h6"></div>
+                        <div class="cell" id="p1@i6"></div>
+                        <div class="cell" id="p1@j6"></div>
 
                         <div class="cell" >7</div>
-                        <div class="cell" id="p1@a7">a7</div>
-                        <div class="cell" id="p1@b7">b7</div>
-                        <div class="cell" id="p1@c7">c7</div>
-                        <div class="cell" id="p1@d7">d7</div>
-                        <div class="cell" id="p1@e7">e7</div>
-                        <div class="cell" id="p1@f7">f7</div>
-                        <div class="cell" id="p1@g7">g7</div>
-                        <div class="cell" id="p1@h7">h7</div>
-                        <div class="cell" id="p1@i7">i7</div>
-                        <div class="cell" id="p1@j7">j7</div>
+                        <div class="cell" id="p1@a7"></div>
+                        <div class="cell" id="p1@b7"></div>
+                        <div class="cell" id="p1@c7"></div>
+                        <div class="cell" id="p1@d7"></div>
+                        <div class="cell" id="p1@e7"></div>
+                        <div class="cell" id="p1@f7"></div>
+                        <div class="cell" id="p1@g7"></div>
+                        <div class="cell" id="p1@h7"></div>
+                        <div class="cell" id="p1@i7"></div>
+                        <div class="cell" id="p1@j7"></div>
 
                         <div class="cell" >8</div>
-                        <div class="cell" id="p1@a8">a8</div>
-                        <div class="cell" id="p1@b8">b8</div>
-                        <div class="cell" id="p1@c8">c8</div>
-                        <div class="cell" id="p1@d8">d8</div>
-                        <div class="cell" id="p1@e8">e8</div>
-                        <div class="cell" id="p1@f8">f8</div>
-                        <div class="cell" id="p1@g8">g8</div>
-                        <div class="cell" id="p1@h8">h8</div>
-                        <div class="cell" id="p1@i8">i8</div>
-                        <div class="cell" id="p1@j8">j8</div>
+                        <div class="cell" id="p1@a8"></div>
+                        <div class="cell" id="p1@b8"></div>
+                        <div class="cell" id="p1@c8"></div>
+                        <div class="cell" id="p1@d8"></div>
+                        <div class="cell" id="p1@e8"></div>
+                        <div class="cell" id="p1@f8"></div>
+                        <div class="cell" id="p1@g8"></div>
+                        <div class="cell" id="p1@h8"></div>
+                        <div class="cell" id="p1@i8"></div>
+                        <div class="cell" id="p1@j8"></div>
 
                         <div class="cell" >9</div>
-                        <div class="cell" id="p1@a9">a9</div>
-                        <div class="cell" id="p1@b9">b9</div>
-                        <div class="cell" id="p1@c9">c9</div>
-                        <div class="cell" id="p1@d9">d9</div>
-                        <div class="cell" id="p1@e9">e9</div>
-                        <div class="cell" id="p1@f9">f9</div>
-                        <div class="cell" id="p1@g9">g9</div>
-                        <div class="cell" id="p1@h9">h9</div>
-                        <div class="cell" id="p1@i9">i9</div>
-                        <div class="cell" id="p1@j9">j9</div>
+                        <div class="cell" id="p1@a9"></div>
+                        <div class="cell" id="p1@b9"></div>
+                        <div class="cell" id="p1@c9"></div>
+                        <div class="cell" id="p1@d9"></div>
+                        <div class="cell" id="p1@e9"></div>
+                        <div class="cell" id="p1@f9"></div>
+                        <div class="cell" id="p1@g9"></div>
+                        <div class="cell" id="p1@h9"></div>
+                        <div class="cell" id="p1@i9"></div>
+                        <div class="cell" id="p1@j9"></div>
 
                         <div class="cell" >10</div>
-                        <div class="cell" id="p1@a10">a10</div>
-                        <div class="cell" id="p1@b10">b10</div>
-                        <div class="cell" id="p1@c10">c10</div>
-                        <div class="cell" id="p1@d10">d10</div>
-                        <div class="cell" id="p1@e10">e10</div>
-                        <div class="cell" id="p1@f10">f10</div>
-                        <div class="cell" id="p1@g10">g10</div>
-                        <div class="cell" id="p1@h10">h10</div>
-                        <div class="cell" id="p1@i10">i10</div>
-                        <div class="cell" id="p1@j10">j10</div>
+                        <div class="cell" id="p1@a10"></div>
+                        <div class="cell" id="p1@b10"></div>
+                        <div class="cell" id="p1@c10"></div>
+                        <div class="cell" id="p1@d10"></div>
+                        <div class="cell" id="p1@e10"></div>
+                        <div class="cell" id="p1@f10"></div>
+                        <div class="cell" id="p1@g10"></div>
+                        <div class="cell" id="p1@h10"></div>
+                        <div class="cell" id="p1@i10"></div>
+                        <div class="cell" id="p1@j10"></div>
                 </div>
                 <aside class="powerup-list">
                     <h2>Power-Ups</h2>
@@ -633,22 +623,6 @@
                     </ul>
                 </aside>
             </div>
-            <section class="multiplayer">
-                <h2>Select the number of players:</h2>
-                <ul>
-                    <li><a href="#"><button class="players-num" id="2-players">2</button></a></li>
-                    <li><a href="#"><button class="players-num" id="3-players">3</button></a></li>
-                    <li><a href="#"><button class="players-num" id="4-players">4</button></a></li>
-                </ul>
-            </section>
-            <aside hidden>
-                <h2>Move the ships to the desired position</h2>
-                <div class="boat" id="carrier"></div>
-                <div class="boat" id="battleship"></div>
-                <div class="boat" id="cruiser"></div>
-                <div class="boat" id="submarine"></div>
-                <div class="boat" id="destroyer"></div>
-            </aside>
         </main>
         <footer>
             <p>No Copyright - <a href="https://www.ucab.edu.ve/">ucab.edu.ve</a></p>

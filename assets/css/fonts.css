@@ -10,9 +10,3 @@
     font-weight: normal;
     font-style: normal;
 }
-@font-face {
-    font-family: "Sherwood";
-    src: url("../fonts/SherwoodRegular.ttf") format("woff2");
-    font-weight: normal;
-    font-style: normal;
-}

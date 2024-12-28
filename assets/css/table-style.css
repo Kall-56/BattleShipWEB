@@ -17,7 +17,7 @@
 }
 
 .table.p2, .table.p3, .table.p4 {
-    width: 60%;     /*It will change dynamically depending on the number of players: 60%--2 players ,90%--3 players,--%--4 players*/
+    width: 60%;     /*It will change dynamically depending on the number of players: 60%--2 players ,90%--3 & 4 players*/
     height: 85%;
 }
 
@@ -36,6 +36,14 @@
     background-color: rgba(1, 68, 173, 0.2);
     border-radius: 20%;
     cursor: pointer;
+}
+
+.cell[id].over {
+    background-color: rgba(1, 24, 203, 0.5);
+}
+
+.cell[id].cant {
+    background-color: rgba(245, 0, 86, 0.3);
 }
 
 .p2 .cell[id] {

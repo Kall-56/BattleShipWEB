@@ -108,7 +108,7 @@ main {
 
 .ship-selection {
     position: absolute;
-    display: none;      /*Display will change to flex to be visible*/
+    display: flex;      /*Display will change to flex to be visible*/
     flex-direction: row;
     top: 20%;
     left: 12.5%;
@@ -131,7 +131,7 @@ main {
 
 .ship-selection>div:nth-child(2) {
     width: 50%;
-    height: 60%;
+    height: 80%;
     margin: 0;
     padding: 0 5%;
 }

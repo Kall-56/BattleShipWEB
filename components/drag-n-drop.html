@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Drag N' Drop Web API</title>
+    <style>
+      .container {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+      }
+
+      .box {
+        border: 3px solid #666;
+        background-color: #ddd;
+        border-radius: 0.5em;
+        padding: 10px;
+        cursor: move;
+      }
+
+      .box.over {
+        border: 3px dotted #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div draggable="true" class="box">Crucero</div>
+      <div draggable="true" class="box">Destructor</div>
+      <div draggable="true" class="box">Submarino</div>
+    </div>
+    <script>
+      // El evento DOMContentLoaded es disparado cuando el documento HTML ha sido completamente cargado e interpretado.
+      // Se diferencia del evento load en que este último se dispara cuando todos los recursos (imágenes, estilos,
+      // scripts, etc) han sido cargados. En cambio, DOMContentLoaded se dispara apenas el documento HTML ha sido
+      // cargado y parseado, sin esperar por los recursos externos. Esto permite que el código contenido en el manejador
+      // de este evento se ejecute más rápido, ya que no tiene que esperar por la carga de todos los recursos a los que
+      // hace referencia el documento (y a los que hacen referencia los recursos referenciados en el HTML)
+      document.addEventListener('DOMContentLoaded', (event) => {
+        let dragSrcEl = null;
+
+        /**
+         * Manejador del evento dragstart. Este evento es disparado cuando un elemento es arrastrado.
+         *
+         * @param {DragEvent} evt - El evento de arrastre.
+         */
+        function handleDragStart(evt) {
+          // Sólo para efectos de visualización (hace que el elemento que está siendo arrastrado se vea con cierta
+          // transparencia).
+          this.style.opacity = '0.4';
+
+          // "Guarda" el elemento que está siendo arrastrado en la variable global dragSrcEl.
+          dragSrcEl = this;
+
+          // Restringe los efectos de arrastre a "mover". Esto es necesario para que el navegador permita el arrastre.
+          // Hay otros tipos de arrastre, como "none", "copy", "copyLink", "copyMove", "link", "linkMove", "move", "all"
+          // y "uninitialized".
+          // Para más información, ver https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
+          evt.dataTransfer.effectAllowed = 'move';
+
+          // Establece el tipo de contenido que será arrastrado. En este caso, el contenido del elemento que está siendo
+          // arrastrado (HTML).
+          evt.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragOver(evt) {
+          // En clases usamos preventDefault para evitar que el navegador redirija la página al soltar el elemento. Sin
+          // embargo, no todos los eventos de JavaScript contienen el mét0do preventDefault. Por esto, preguntamos
+          // primero si el evento contiene el mét0do preventDefault antes de llamarlo (recordar que en JavaScript, si
+          // no hemos definido una variable, mét0do o función, contendrá "undefined" cuyo valor es "falso" si es usado
+          // en una expresión boolana).
+          if (evt.preventDefault) {
+            evt.preventDefault();
+          }
+
+          // Se establece el efecto de arrastre. En este caso, "move". Es posible usar otros efectos, como "none",
+          // "copy", "link", además de "move". Para más información, ver
+          // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect
+          evt.dataTransfer.dropEffect = 'move';
+
+          // Retorna "false" para evitar que el navegador redirija la página al soltar el elemento.
+          return false;
+        }
+
+        /**
+         * Manejador del evento dragenter. Este evento es disparado cuando un elemento es arrastrado sobre otro
+         * elemento.
+         *
+         * @param {DragEvent} evt - El evento de arrastre.
+         */
+        function handleDragEnter(evt) {
+          // Cuando el elemento que estamos arrastrando entra en otro elemento, le añadimos la clase "over" al elemento,
+          // para que se vea que el elemento está siendo arrastrado sobre él.
+          this.classList.add('over');
+        }
+
+        /**
+         * Manejador del evento dragleave. Este evento es disparado cuando un elemento es arrastrado fuera de otro
+         * elemento.
+         *
+         * @param {DragEvent} evt - El evento de arrastre.
+         */
+        function handleDragLeave(evt) {
+          // Cuando el elemento que estamos arrastrando sale de otro elemento, le quitamos la clase "over" al elemento,
+          // para que se vea que el elemento ya no está siendo arrastrado sobre él.
+          this.classList.remove('over');
+        }
+
+        /**
+         * Manejador del evento drop. Este evento es disparado cuando un elemento es soltado sobre otro elemento.
+         *
+         * @param {DragEvent} evt - El evento de arrastre.
+         */
+        function handleDrop(evt) {
+          // Evita que el navegador redirija la página al soltar el elemento, aunque, en este caso, no es necesario ya
+          // que el evento dragover lo hace de manera predeterminada (igual que en handleDragOver). Sin embargo, es
+          // recomendable hacerlo para evitar problemas con navegadores que no soporten el evento dragover.
+          if (evt.stopPropagation) {
+            evt.stopPropagation();
+          }
+
+          // Si el elemento que estamos arrastrando no es el mismo que el elemento sobre el que estamos soltando,
+          // intercambia el contenido de ambos elementos. Esto es porque así se definió en el ejemplo, pero puede
+          // cambiarse por cualquier otra acción.
+          if (dragSrcEl !== this) {
+            dragSrcEl.innerHTML = this.innerHTML;
+            this.innerHTML = evt.dataTransfer.getData('text/html');
+          }
+
+          return false;
+        }
+
+        /**
+         * Manejador del evento dragend. Este evento es disparado cuando un elemento termina de ser arrastrado.
+         *
+         * @param {DragEvent} evt - El evento de arrastre.
+         */
+        function handleDragEnd(evt) {
+          // Sólo para efectos de visualización (hace que el elemento que está siendo arrastrado vuelva a su opacidad
+          // original).
+          this.style.opacity = '1';
+
+          // Quita la clase "over" a todos los elementos que la tengan. Esto es para que no queden elementos con la
+          // clase "over" después de que el elemento que está siendo arrastrado haya sido soltado.
+          items.forEach(function (item) {
+            item.classList.remove('over');
+          });
+        }
+
+        // Obtiene todos los elementos con la clase "box" y les añade los manejadores de eventos necesarios para el
+        // funcionamiento del drag and drop.
+        let items = document.querySelectorAll('.container .box');
+
+        items.forEach(function (item) {
+          // A cada ítem "arrastable", se le agrega un listener para los eventos de arrastre. En este caso, se agrega
+          // un listener para los eventos "dragstart", "dragenter", "dragover", "dragleave", "drop" y "dragend". Para
+          // más información sobre estos eventos, ver https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
+          // y https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations y
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_events.
+          // Al agregar el listener, se le pasa, primero, el nombre del evento ('dragstart', 'dragenter', etc.), luego,
+          // la función que se ejecutará cuando el evento sea disparado y, finalmente, un valor booleano que indica si
+          // el evento debe ser capturado en la fase de burbujeo (false) o en la fase de captura (true). Recuérdese que
+          // los eventos en JavaScript se propagan desde el elemento que los dispara hasta el elemento raíz del
+          // documento (fase de burbujeo).
+          item.addEventListener('dragstart', handleDragStart, false);
+          item.addEventListener('dragenter', handleDragEnter, false);
+          item.addEventListener('dragover', handleDragOver, false);
+          item.addEventListener('dragleave', handleDragLeave, false);
+          item.addEventListener('drop', handleDrop, false);
+          item.addEventListener('dragend', handleDragEnd, false);
+        });
+      });
+    </script>
+  </body>
+</html>

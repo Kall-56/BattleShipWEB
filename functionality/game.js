@@ -1,4 +1,61 @@
 document.addEventListener('DOMContentLoaded', (event) => {
+    class shipClass {
+        constructor(htmlElement, name, orientation, size,) {
+            this.htmlElement = [];
+            this.htmlElement.push(htmlElement);
+            this.name = name;
+            this.orientation = orientation;
+            this.size = size;
+            this.cellList = [];
+        }
+        setProperties(shipDiv, newOrientation){
+            this.htmlElement = shipDiv;
+            this.name = this.htmlElement.id;
+            this.orientation = newOrientation;
+            this.size = getShipSize(this.name);
+        }
+        setHtmlElement(newHtml) {
+            this.htmlElement = newHtml;
+        }
+        getHtmlElement() {
+            return this.htmlElement;
+        }
+        getName() {
+            return this.name;
+        }
+        getOrientation() {
+            return this.orientation;
+        }
+        getSize() {
+            return this.size;
+        }
+        setCellList(cells) {
+            this.cellList = cells;
+        }
+        getCellList() {
+            return this.cellList;
+        }
+    }
+
+    function getShipSize(shipName) {
+        const shipSizes = {
+            carrier: 5,
+            cruiser: 3,
+            submarine: 3,
+            battleship: 4,
+            destroyer: 2,
+        };
+        return shipSizes[shipName];
+    }
+
+    function getCellIndex(cell) {
+        for (let i = 0; i < iCells.length; i++) {
+            if (iCells[i] === cell) {
+                return i;
+            }
+        }
+    }
+
     function calculateShipTiles(startPos, orientation, size) {
         const rows = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
         let row = startPos.charAt(0);
@@ -28,18 +85,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     function placeShip(ship, position, orientation) {
-        const shipSizes = {
-            carrier: 5,
-            cruiser: 3,
-            submarine: 3,
-            battleship: 4,
-            destroyer: 2,
-        };
-
-        const shipSize = shipSizes[ship] || 0;
-        if (!shipSize) {
-            return;
-        }
+        const shipSize = getShipSize(ship.id);
 
         let positions = calculateShipTiles(position, orientation, shipSize);
         if (positions.length !== shipSize) {
@@ -74,23 +120,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
-    function validatePlacement(ship, position, orientation) {
-        const shipSizes = {
-            carrier: 5,
-            cruiser: 3,
-            submarine: 3,
-            battleship: 4,
-            destroyer: 2,
-        };
-
-        const shipSize = shipSizes[ship] || 0;
-        if (!shipSize) {
-            return false;
-        }
-
+    function validatePlacement(ship, position, orientation, shipSize) {
         let positions = calculateShipTiles(position, orientation, shipSize);
         if (positions.length !== shipSize) {
-            console.error("Cannot place ship. Out of bounds");
+            console.log("Cannot place ship. Out of bounds");
             return false;
         }
 
@@ -98,11 +131,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         for (let pos of positions) {
             const tile = document.getElementById(`p1@${pos}`);
             if (!tile) {
-                console.error(`Not valid position: ${pos}`);
+                console.log(`Not valid position: ${pos}`);
                 return false;
             }
             if (tile.hasChildNodes()) {
-                console.error(`Position ${pos} already occupied.`);
+                console.log(`Position ${pos} already occupied.`);
                 return false;
             }
         }
@@ -165,14 +198,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
         shipBoardPlace.appendChild(generateBoard(1));
     }
 
+//--------------------------------------------------------------------------------------------------------------------//
     let dragElement = null;
+    let elOrientation = "horizontal";
+    let elSize = 0;
 
     function handleDragStart(evt) {
         this.style.opacity = '0.4';
+        if (this.shipInstance) {
+            dragElement = this.shipInstance;
+        } else {
+            dragElement = new shipClass(this,this.id,elOrientation,getShipSize(this.id));
+            console.log("confirmed creation");
+            console.log(dragElement);
+            //elSize = getShipSize(this.id);
+        }
 
-        dragElement = this;
         evt.dataTransfer.effectAllowed = 'move';
-
         evt.dataTransfer.setData('text/plain', this.id);
     }
 
@@ -188,16 +230,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
     function handleDragEnter(evt) {
         let position = this.id;
         position = position.slice(3);
-        if (validatePlacement(dragElement.id,position,"horizontal")) {
-            this.classList.add('over');
-        } else {
-            this.classList.add('cant');
-        }
-    }
 
-    function handleDragLeave(evt) {
-        this.classList.remove('over');
-        this.classList.remove('cant');
+        iCells.forEach(function (item) {
+            if (!item.hasChildNodes()) {
+                item.classList.remove('over');
+                item.classList.remove('cant');
+            }
+        });
+
+        let index = getCellIndex(this);
+        if (validatePlacement(dragElement.name,position,dragElement.orientation,dragElement.size)) {
+            for (let i = index; i < index +dragElement.size; i++) {
+                if (!iCells[i].hasChildNodes()) {
+                    iCells[i].classList.add('over');
+                }
+            }
+        } else {
+            for (let i = index; i < index+dragElement.size; i++) {
+                if (!iCells[i].hasChildNodes()) {
+                    iCells[i].classList.add('cant');
+                }
+            }
+        }
     }
 
     function handleDrop(evt) {
@@ -205,19 +259,49 @@ document.addEventListener('DOMContentLoaded', (event) => {
             evt.stopPropagation();
         }
 
-        if (dragElement !== this) {
-            dragElement.innerHTML = this.innerHTML;
-            this.innerHTML = evt.dataTransfer.getData('text/html');
-        }
+        if (!this.classList.contains("cant")) {
+            let elId = evt.dataTransfer.getData("text/plain");
+            let elShip = document.getElementById(elId);
 
+            elShip.style.position = "absolute";
+            elShip.style.width = 100 * dragElement.size + "%";
+            elShip.style.height = 90 + "%";
+            elShip.style.left = (100 / dragElement.size) + "%";
+            this.appendChild(elShip);
+
+            dragElement.cellList.length = 0;
+            console.log(dragElement.htmlElement);
+            for (let i = dragElement.htmlElement.length-1; i > 0; i--) {
+                dragElement.htmlElement[i].remove();
+            }
+            dragElement.htmlElement.length = 1;
+            console.log(dragElement.htmlElement);
+            console.log("this should be 1");
+
+            let index = getCellIndex(this);
+            for (let i = index+1; i < index + dragElement.size; i++) {
+                let shipPart = document.createElement("div");
+                shipPart.classList.add("ship");
+                dragElement.htmlElement.push(shipPart);
+
+                iCells[i].appendChild(shipPart);
+                dragElement.cellList.push(iCells[i]);
+            }
+            console.log(dragElement.htmlElement);
+            console.log("this should be all");
+        }
         return false;
     }
 
     function handleDragEnd(evt) {
         this.style.opacity = '1';
+        this.shipInstance = dragElement;
 
         iCells.forEach(function (item) {
+            if (!item.hasChildNodes()) {
             item.classList.remove('over');
+            item.classList.remove('cant');
+            }
         });
     }
 
@@ -229,12 +313,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
     iShips.forEach(function (item) {
         item.addEventListener('dragstart', handleDragStart, false);
         item.addEventListener('dragend', handleDragEnd, false);
+        item.addEventListener('wheel', function() {
+            if (dragElement !== null)
+            if (elOrientation === "horizontal") {
+                elOrientation = "vertical";
+                this.style.rotate = 90 + "deg";
+            } else {
+                elOrientation = "horizontal";
+                this.style.rotate = 0+"deg";
+            }
+        }, true);
     });
 
     iCells.forEach(function (item) {
         item.addEventListener('dragover', handleDragOver, false);
         item.addEventListener('dragenter', handleDragEnter, false);
-        item.addEventListener('dragleave', handleDragLeave, false);
         item.addEventListener('drop', handleDrop, false);
     });
 

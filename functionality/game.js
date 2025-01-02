@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
     class shipClass {
         constructor(htmlElement, name, orientation, size,) {
             this.htmlElement = [];
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
-    function createGameBoard4Ships(amountPlayers) {
+    function createGameBoard4Ships() {
         let shipBoardPlace = document.getElementById('ship-side');
 
         shipBoardPlace.appendChild(generateBoard(1));
@@ -200,18 +200,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 //--------------------------------------------------------------------------------------------------------------------//
     let dragElement = null;
-    let elOrientation = "horizontal";
-    let elSize = 0;
 
     function handleDragStart(evt) {
         this.style.opacity = '0.4';
+        let orientation;
+
         if (this.shipInstance) {
             dragElement = this.shipInstance;
         } else {
-            dragElement = new shipClass(this,this.id,elOrientation,getShipSize(this.id));
+            if (this.classList.contains("vertical")) {
+                orientation = "vertical";
+            } else {
+                orientation = "horizontal";
+            }
+
+            dragElement = new shipClass(this,this.id,orientation,getShipSize(this.id));
             console.log("confirmed creation");
             console.log(dragElement);
-            //elSize = getShipSize(this.id);
         }
 
         evt.dataTransfer.effectAllowed = 'move';
@@ -227,7 +232,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         return false;
     }
 
-    function handleDragEnter(evt) {
+    function handleDragEnter() {
         let position = this.id;
         position = position.slice(3);
 
@@ -239,15 +244,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
 
         let index = getCellIndex(this);
-        if (validatePlacement(dragElement.name,position,dragElement.orientation,dragElement.size)) {
-            for (let i = index; i < index +dragElement.size; i++) {
-                if (!iCells[i].hasChildNodes()) {
+        let orientationValue;
+        if (dragElement.orientation === "horizontal") {
+            orientationValue = 1;
+        }else {
+            orientationValue = 11;
+        }
+
+        if (validatePlacement(dragElement.name, position, dragElement.orientation, dragElement.size)) {
+            for (let i = index; i < index + (dragElement.size * orientationValue); i += orientationValue) {
+                if ((i <= 120) && !iCells[i].hasChildNodes()) {
                     iCells[i].classList.add('over');
                 }
             }
         } else {
-            for (let i = index; i < index+dragElement.size; i++) {
-                if (!iCells[i].hasChildNodes()) {
+            for (let i = index; i < index + (dragElement.size * orientationValue); i += orientationValue) {
+                if ((i <= 120) && !iCells[i].hasChildNodes()) {
                     iCells[i].classList.add('cant');
                 }
             }
@@ -264,38 +276,59 @@ document.addEventListener('DOMContentLoaded', (event) => {
             let elShip = document.getElementById(elId);
 
             elShip.style.position = "absolute";
-            elShip.style.width = 100 * dragElement.size + "%";
-            elShip.style.height = 90 + "%";
-            elShip.style.left = (100 / dragElement.size) + "%";
+            if (dragElement.orientation === "horizontal") {
+                elShip.style.maxWidth = 100 * dragElement.size + "%";
+                elShip.style.left = 10 + "%";
+                elShip.style.bottom = 0 + "px";
+                elShip.style.top = "auto";
+            }else {
+                elShip.style.maxwidth = 100 * (dragElement.size - 1) + "%";
+                elShip.style.left = "auto";
+                elShip.style.top = 100 + "%";
+                elShip.style.bottom = "auto";
+            }
             this.appendChild(elShip);
 
             dragElement.cellList.length = 0;
-            console.log(dragElement.htmlElement);
+
             for (let i = dragElement.htmlElement.length-1; i > 0; i--) {
                 dragElement.htmlElement[i].remove();
             }
             dragElement.htmlElement.length = 1;
-            console.log(dragElement.htmlElement);
-            console.log("this should be 1");
+
+
 
             let index = getCellIndex(this);
-            for (let i = index+1; i < index + dragElement.size; i++) {
-                let shipPart = document.createElement("div");
-                shipPart.classList.add("ship");
-                dragElement.htmlElement.push(shipPart);
+            dragElement.cellList.push(iCells[index]);
 
-                iCells[i].appendChild(shipPart);
-                dragElement.cellList.push(iCells[i]);
+            if (dragElement.orientation === "horizontal") {
+                for (let i = index + 1; i < index + dragElement.size; i++) {
+                    let shipPart = document.createElement("div");
+                    shipPart.classList.add("ship");
+                    dragElement.htmlElement.push(shipPart);
+
+                    iCells[i].appendChild(shipPart);
+                    dragElement.cellList.push(iCells[i]);
+                }
+
+            }else {
+                for (let i = index + 11; i < index + (dragElement.size*11); i+=11) {
+                    let shipPart = document.createElement("div");
+                    shipPart.classList.add("ship");
+                    dragElement.htmlElement.push(shipPart);
+
+                    iCells[i].appendChild(shipPart);
+                    dragElement.cellList.push(iCells[i]);
+                }
             }
-            console.log(dragElement.htmlElement);
-            console.log("this should be all");
         }
         return false;
     }
 
-    function handleDragEnd(evt) {
+    function handleDragEnd() {
         this.style.opacity = '1';
         this.shipInstance = dragElement;
+        dragElement = null;
 
         iCells.forEach(function (item) {
             if (!item.hasChildNodes()) {
@@ -305,7 +338,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
-    createGameBoard4Ships(1);
+    createGameBoard4Ships();
 
     let iShips = document.querySelectorAll('.ship');
     let iCells = document.querySelectorAll('.cell');
@@ -314,13 +347,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
         item.addEventListener('dragstart', handleDragStart, false);
         item.addEventListener('dragend', handleDragEnd, false);
         item.addEventListener('wheel', function() {
-            if (dragElement !== null)
-            if (elOrientation === "horizontal") {
-                elOrientation = "vertical";
-                this.style.rotate = 90 + "deg";
+            if (!item.shipInstance) {
+                if (item.classList.contains("vertical")) {
+                    item.classList.remove("vertical");
+                } else {
+                    item.classList.add("vertical");
+                }
             } else {
-                elOrientation = "horizontal";
-                this.style.rotate = 0+"deg";
+                if (item.classList.contains("vertical")) {
+                    item.classList.remove("vertical");
+                    item.shipInstance.orientation = "horizontal";
+                } else {
+                    item.classList.add("vertical");
+                    item.shipInstance.orientation = "vertical";
+                }
             }
         }, true);
     });
@@ -330,6 +370,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         item.addEventListener('dragenter', handleDragEnter, false);
         item.addEventListener('drop', handleDrop, false);
     });
+
+
 
     //createGameBoards(3);
     //placeShip("carrier", "d4", "horizontal");

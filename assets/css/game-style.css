@@ -139,9 +139,14 @@ main {
 .ship {
     margin: 0;
     padding: 0;
+    rotate: 0deg;
     z-index: 3;
     pointer-events: auto;
     cursor: grab;
+}
+
+.ship.vertical {
+    rotate: 90deg;
 }
 
 #carrier {

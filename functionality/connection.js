@@ -1,8 +1,11 @@
+import { createGameBoards } from "./game.js";
+
 let shipsSend = false;
 let gameJoined = false;
+let actualGameId = '';
 
-let lastOpponentClicked = '';
 let players = [];
+let amountPlayers = 1;
 
 function sendMessage(socket, message) {
     const messageString = JSON.stringify(message);
@@ -31,18 +34,20 @@ function handleUserRegistration() {
     disableGameBts(false);
     changeMessage('Your user has been registered');
 
-    players.push(document.getElementById('username').value);
+    const name = document.getElementById('username').value;
+    document.getElementById('user-name').innerText = name;
+    players.push(name);
 }
 
 function handleFleetEstablished() {
     shipsSend = true;
-    document.getElementById('send-ships').disabled = true;
     document.getElementById('ready').disabled = enableReadyBt();
     changeMessage('Your fleet has been established');
 }
 
 function handleGameCreation(gameId) {
     gameJoined = true;
+    actualGameId = gameId;
     document.getElementById('game-id').value = gameId;
     document.getElementById('leave-game').disabled = false;
     disableGameBts(true);
@@ -50,16 +55,17 @@ function handleGameCreation(gameId) {
     changeMessage(`Game created. ID: ${gameId}`);
 }
 
-function handleJoinGame(playerNames, playerCount) {
+function handleJoinGame(gameId, playerNames, playerCount) {
     gameJoined = true;
+    actualGameId = gameId;
+    amountPlayers = playerCount;
     disableGameBts(true);
-    document.getElementById('opponent-boards').setAttribute('class', `players-${playerCount}`);
     document.getElementById('leave-game').disabled = false;
     document.getElementById('ready').disabled = enableReadyBt();
 
-    for (let nameInd in playerNames) {
-        if (!players.includes(playerNames[nameInd])) {
-            players.push(playerNames[nameInd]);
+    for (let name of playerNames) {
+        if (!players.includes(name)) {
+            players.push(name);
         }
     }
     changeMessage('Someone joined the game lobby');
@@ -72,22 +78,73 @@ function handleWait() {
 
 function handleGameStart(turn) {
     document.getElementById('ready').disabled = true;
-    document.getElementById('send-move').disabled = false;
-    document.getElementById('player-turn').innerText = turn;
+    document.getElementById('turn-user').innerText = turn;
     changeMessage('Game started!');
 
+    // Poner y/o quitar clases, ids que hagan falta en el DOM
+
+    // En el tablero del propio jugador hay que mostrar los barcos
+
+    // En algún lado de la pantalla de juego normal (cuando comienza) poner tanto el botón de desconexión y abandono en algún lado
+    // como el bloque para colocar los mensajes que lleguen del servidor websocket
+
+    createGameBoards(amountPlayers);
+    document.getElementById('ship-side').hidden = true;
+
+    const opponentBoards = [...document.getElementsByClassName('table opponent')];
+    for (let i = 0; i < opponentBoards.length; i++) {
+        const positions = opponentBoards[i].querySelectorAll('.cell');
+        positions.forEach((pos) => {
+            const idMove = pos.id.split('@')[1];
+            if (idMove) {
+                pos.addEventListener('click', () => {
+                    sendMessage(socket, { type: 'move', gameId: actualGameId, move: idMove, opponentName: players[pos.id.split('@')[0][1] - 1] });
+                });
+            }
+        });
+    }
 }
 
 function handleMove(move, hit, opponentName, turn) {
     const oppIndex = players.indexOf(opponentName);
+    // Hacer algo con estas clases para poder visualizarlo en el tablero
     let hitClass = 'miss';
     if (hit) {
         hitClass = 'hit';
     }
     document.getElementById(`p${oppIndex + 1}@${move}`).classList.add(hitClass);
-    document.getElementById('player-turn').innerText = turn;
+
+    // Cambiar el DOM para mostrar a quién le toca ahora
+    document.getElementById('turn-user').innerText = turn;
     changeMessage(`${opponentName} has been attacked at: ${move} (${hit})`);
 
+}
+
+function handleGameFinished(winner) {
+    // Mostrar quien es el ganador
+
+    // Preguntar al usuario si quiere volver a jugar o no
+    // Si sí: borrar tableros, abandonar la partida, vaciar [players] y volver a mostrar la pantalla de posicionamiento, reiniciando también
+    //    el [actualGameId], [shipsSend] y [amountPlayers]. Solo habilitar botones para [unirse], [crear], [mandar flota]
+    // Si no: desconectar al jugador y mandarlo al [Home Menu]
+}
+
+function handleGameLost(message) {
+    // Notificar que el jugador perdió, dando algún indicativo visual de esto. Sin embargo, mantenerlo en partida
+    // Capaz resaltar el botón de abandonar
+}
+
+function handleLeftGame() {
+    // Preguntar al usuario si quiere volver a jugar o no
+    // Si sí: borrar tableros, abandonar la partida, vaciar [players] y volver a mostrar la pantalla de posicionamiento, reiniciando también
+    //    el [actualGameId], [shipsSend] y [amountPlayers]. Solo habilitar botones para [unirse], [crear], [mandar flota]
+    // Si no: desconectar al jugador y mandarlo al [Home Menu]
+}
+
+function handlePlayerLeft(playerCount, playerName, turn) {
+    // Borrar el tablero del jugador que se fue
+    // Cambiar el texto sobre quien es el turno actual
+    // Creo que ya ...?
 }
 
 // Maneja los mensajes recibidos
@@ -103,7 +160,7 @@ function handleMessage(message) {
             handleGameCreation(message.gameId);
             break;
         case 'playerJoined':
-            handleJoinGame(message.playerNames, message.playerCount);
+            handleJoinGame(message.gameId, message.playerNames, message.playerCount);
             break;
         case 'wait':
             handleWait();
@@ -114,9 +171,17 @@ function handleMessage(message) {
         case 'move':
             handleMove(message.move, message.hit, message.opponentName, message.turn);
             break;
+        case 'gameFinished':
+            handleGameFinished(message.winner);
+            break;
+        case 'gameLost':
+            handleGameLost(message.message);
+            break;
         case 'leftGame':
+            handleLeftGame();
             break;
         case 'playerLeft':
+            handlePlayerLeft(message.playerCount, message.playerName, message.turn);
             break;
         case 'error':
             changeMessage(message.message);
@@ -142,41 +207,36 @@ socket.addEventListener('open', () => {
 socket.addEventListener('message', (event) => {
     const message = JSON.parse(event.data);
     handleMessage(message);
-    //document.getElementById('messages').innerText = event.data;
 });
 
 socket.addEventListener('close', () => {
     console.log('%cSe ha cerrado la conexión con el servidor WebSocket', 'color: #ee0000');
 
-    disableButtons(true);
-
     const closeButton = document.getElementById('close-connection');
     closeButton.remove();
+
+    // Mandarlo a [Home Menu]
 });
 
 // DOM -----------------------------------------------------------------------------------------------------------------
-// Lógica para obtener las posiciones de los barcos
 function obtainShips() {
     const ships = [];
-    const playerBoard = document.getElementById('board-p1');
-    const positions = playerBoard.querySelectorAll('div');
-
     const shipsNames = ['carrier', 'destroyer', 'cruiser', 'submarine', 'battleship'];
-    for (let shipInd in shipsNames) {
-        const nameSearch = shipsNames[shipInd];
 
-        const shipPositions = [];
-        positions.forEach((pos) => {
-            if (pos.firstElementChild) {
-                if (pos.firstElementChild.id === nameSearch) {
-                    shipPositions.push(pos.id.split('@')[1]);
-                }
-            }
-        });
-        if (shipPositions.length > 0) {
-            ships.push(shipPositions);
+    shipsNames.forEach(shipName => {
+        const shipElement = document.getElementById(shipName);
+        if (!shipElement || !shipElement.shipInstance) {
+            console.error(`Ship not found: ${shipName}`);
+            return [];
         }
-    }
+
+        const positions = shipElement.shipInstance.cellList.map(cell => cell.id.split('@')[1]);
+        if (positions.length === 0) {
+            console.error('Set up all your ships on the board!');
+            return [];
+        }
+        ships.push(positions);
+    });
     return ships;
 }
 
@@ -188,7 +248,6 @@ function disableButtons(disable) {
 
     document.getElementById('username').disabled = disable;
     document.getElementById('game-id').disabled = disable;
-    document.getElementById('move').disabled = disable;
 }
 
 function obtainGameId() {
@@ -234,12 +293,6 @@ ready.addEventListener('click', () => {
     sendMessage(socket, { type: 'start', gameId: obtainGameId() });
 });
 
-const sendMove = document.getElementById('send-move');
-sendMove.addEventListener('click', () => {
-    const move = document.getElementById('move').value;
-    sendMessage(socket, { type: 'move', gameId: obtainGameId(), move, opponentIndex: (lastOpponentClicked - 1) });
-});
-
 const leaveGame = document.getElementById('leave-game');
 leaveGame.addEventListener('click', () => {
     sendMessage(socket, { type: 'leave', gameId: obtainGameId() });
@@ -254,18 +307,3 @@ closeConnection.addEventListener('click', () => {
         socket.close();
     }
 });
-
-const opponentBoards = [...document.getElementsByClassName('board opponent')];
-for (let i = 0; i < opponentBoards.length; i++) {
-    const positions = opponentBoards[i].querySelectorAll('.pos');
-    positions.forEach((pos) => {
-        const idMove = pos.id.split('@')[1];
-        if (idMove) {
-            pos.addEventListener('click', () => {
-                document.getElementById('move').value = idMove;
-                lastOpponentClicked = pos.id.split('@')[0][1] // Because the format is: p{}@{}
-                sendMessage(socket, { type: 'move', gameId: obtainGameId(), move: idMove, opponentName: players[lastOpponentClicked - 1] });
-            });
-        }
-    });
-}

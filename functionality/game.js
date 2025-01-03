@@ -1,3 +1,59 @@
+export function createGameBoards(amountPlayers) {
+    let playerBoardPlace = document.getElementById('player-space');
+    let opponentsPlace = document.getElementById('opponents-space');
+
+    let casillas = generateBoard(1).childNodes;
+    [...casillas].forEach(casilla => {
+        playerBoardPlace.appendChild(casilla)
+    });
+
+    for (let i = 2; i <= amountPlayers; i++) {
+        let opponentPlace = document.createElement('div');
+        opponentPlace.setAttribute('class', 'player-container');
+
+        let opponentName = document.createElement('span');
+        opponentName.setAttribute('id', `p${i}-name`);
+        opponentPlace.appendChild(opponentName);
+
+        opponentPlace.appendChild(generateBoard(i));
+        opponentsPlace.appendChild(opponentPlace);
+    }
+}
+
+function generateBoard(playerNum) {
+    const letters = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    const boardSize = letters.length;
+    let board = document.createElement('div');
+
+    board.setAttribute('class', `table p${playerNum}`);
+    board.setAttribute('id', `board-p${playerNum}`);
+
+    if (playerNum > 1) {
+        board.classList.add('opponent');
+    }
+
+    for (let index = 0; index < boardSize * boardSize; index++) {
+        const row = Math.floor(index / boardSize);
+        const col = index % boardSize;
+
+        const tile = document.createElement('div');
+
+        if (row === 0) {
+            tile.setAttribute('class', 'row-0');
+            tile.textContent = col.toString();
+        } else if (col !== 0) {
+            tile.setAttribute('class', 'cell');
+            tile.setAttribute('id', `p${playerNum}@${letters[row] + col}`);
+        }
+        if (col === 0) {
+            tile.classList.add('col-0');
+            tile.textContent = letters[row].toUpperCase();
+        }
+        board.appendChild(tile);
+    }
+    return board;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     class shipClass {
         constructor(htmlElement, name, orientation, size,) {
@@ -128,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Verifying overlapping
         for (let pos of positions) {
-            const tile = document.getElementById(`p1@${pos}`);
+            const tile = document.getElementById(`p0@${pos}`);
             if (!tile) {
                 return false;
             }
@@ -142,62 +198,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    function generateBoard(playerNum) {
-        const letters = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
-        const boardSize = letters.length;
-        let board = document.createElement('div');
-
-        board.setAttribute('class', `table p${playerNum}`);
-        board.setAttribute('id', `board-p${playerNum}`);
-
-        for (let index = 0; index < boardSize * boardSize; index++) {
-            const row = Math.floor(index / boardSize);
-            const col = index % boardSize;
-
-            const tile = document.createElement('div');
-            tile.setAttribute('class', 'cell');
-
-            if (row === 0) {
-                tile.classList.add('row-0');
-                tile.textContent = col.toString();
-            } else if (col !== 0) {
-                tile.setAttribute('id', `p${playerNum}@${letters[row] + col}`);
-            }
-            if (col === 0) {
-                tile.classList.add('col-0');
-                tile.textContent = letters[row].toUpperCase();
-            }
-            board.appendChild(tile);
-        }
-        return board;
-    }
-
-    // function createGameBoards(amountPlayers) {
-    //     let playerBoardPlace = document.getElementById('player-space');
-    //     let opponentsPlace = document.getElementById('opponents-space');
-    //
-    //     let casillas = generateBoard(1).childNodes;
-    //     [...casillas].forEach(casilla => {
-    //         playerBoardPlace.appendChild(casilla)
-    //     });
-    //
-    //     for (let i = 2; i <= amountPlayers; i++) {
-    //         let opponentPlace = document.createElement('div');
-    //         opponentPlace.setAttribute('class', 'player-container');
-    //
-    //         let opponentName = document.createElement('span');
-    //         opponentName.setAttribute('id', `p${i}-name`);
-    //         opponentPlace.appendChild(opponentName);
-    //
-    //         opponentPlace.appendChild(generateBoard(i));
-    //         opponentsPlace.appendChild(opponentPlace);
-    //     }
-    // }
-
     function createGameBoard4Ships() {
         let shipBoardPlace = document.getElementById('ship-side');
 
-        shipBoardPlace.appendChild(generateBoard(1));
+        shipBoardPlace.appendChild(generateBoard(0));
     }
 
 //--------------------------------------------------------------------------------------------------------------------//
@@ -216,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 orientation = "horizontal";
             }
 
-            dragElement = new shipClass(this,this.id,orientation,getShipSize(this.id));
+            dragElement = new shipClass(this, this.id, orientation, getShipSize(this.id));
             console.log("confirmed creation");
             console.log(dragElement);
         }
@@ -260,24 +264,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         let index = getCellIndex(this);
-        let orientationValue;
-        if (dragElement.orientation === "horizontal") {
-            orientationValue = 1;
-        }else {
-            orientationValue = 11;
+
+        let iSum = 1;
+        if (dragElement.orientation === "vertical") {
+            iSum = 10;
         }
 
+        let cellClass = 'cant';
         if (validatePlacement(dragElement.name, position, dragElement.orientation, dragElement.size)) {
-            for (let i = index; i < index + (dragElement.size * orientationValue); i += orientationValue) {
-                if ((i <= 120) && !iCells[i].hasChildNodes()) {
-                    iCells[i].classList.add('over');
-                }
-            }
-        } else {
-            for (let i = index; i < index + (dragElement.size * orientationValue); i += orientationValue) {
-                if ((i <= 120) && !iCells[i].hasChildNodes()) {
-                    iCells[i].classList.add('cant');
-                }
+            cellClass = 'over';
+        }
+
+        for (let i = index; i < index + (dragElement.size * iSum); i += iSum) {
+            if ((i <= 120) && !iCells[i].hasChildNodes()) {
+                iCells[i].classList.add(cellClass);
             }
         }
     }
@@ -321,25 +321,18 @@ document.addEventListener('DOMContentLoaded', () => {
             let index = getCellIndex(this);
             dragElement.cellList.push(iCells[index]);
 
-            if (dragElement.orientation === "horizontal") {
-                for (let i = index + 1; i < index + dragElement.size; i++) {
-                    let shipPart = document.createElement("div");
-                    shipPart.classList.add("ship");
-                    dragElement.htmlElement.push(shipPart);
+            let iSum = 1;
+            if (dragElement.orientation === "vertical") {
+                iSum = 10;
+            }
 
-                    iCells[i].appendChild(shipPart);
-                    dragElement.cellList.push(iCells[i]);
-                }
+            for (let i = index + iSum; i < index + (dragElement.size * iSum); i += iSum) {
+                let shipPart = document.createElement("div");
+                shipPart.classList.add("ship");
+                dragElement.htmlElement.push(shipPart);
 
-            }else {
-                for (let i = index + 11; i < index + (dragElement.size*11); i+=11) {
-                    let shipPart = document.createElement("div");
-                    shipPart.classList.add("ship");
-                    dragElement.htmlElement.push(shipPart);
-
-                    iCells[i].appendChild(shipPart);
-                    dragElement.cellList.push(iCells[i]);
-                }
+                iCells[i].appendChild(shipPart);
+                dragElement.cellList.push(iCells[i]);
             }
         }
         return false;

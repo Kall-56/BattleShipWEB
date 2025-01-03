@@ -33,7 +33,7 @@
             <aside>
                 <div class="ship-selection" id="ship-side">
                     <div>
-                        <section>
+                        <section class="ship-warehouse">
                             <h2>Move the ships to the desired position</h2>
                             <img class="ship" id="carrier" src="../assets/images/carrier.png" alt="carrier"/>
                             <img class="ship" id="battleship" src="../assets/images/battleship.png" alt="battleship"/>
@@ -70,12 +70,7 @@
             </aside>
             <section id="turn-ui">
                 <h2>Actual Turn:</h2>
-                <ol class="turn-list">
-                    <li id="turn-user-name">You</li>
-                    <li id="turn-p2">Player 2</li>
-                    <li id="turn-p3">Player 3</li>
-                    <li id="turn-p4">Player 4</li>
-                </ol>
+                <p id="turn-user">Someone</p>
             </section>
             <div class="game-side" id="opponents-space">
             </div>
@@ -121,6 +116,7 @@
                 <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
             </svg>
         </footer>
-        <script src="../functionality/game.js"></script>
+        <script src="../functionality/game.js" type="module"></script>
+        <script src="../functionality/connection.js" type="module"></script>
     </body>
 </html>

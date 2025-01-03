@@ -84,46 +84,45 @@ document.addEventListener('DOMContentLoaded', () => {
         return positions;
     }
 
-    function placeShip(ship, position, orientation) {
-        const shipSize = getShipSize(ship.id);
-
-        let positions = calculateShipTiles(position, orientation, shipSize);
-        if (positions.length !== shipSize) {
-            console.error("Cannot place ship. Out of bounds");
-            return;
-        }
-
-        // Verifying overlapping
-        for (let pos of positions) {
-            const tile = document.getElementById(`p1@${pos}`);
-            if (!tile) {
-                console.error(`Not valid position: ${pos}`);
-                return;
-            }
-            if (tile.hasChildNodes()) {
-                console.error(`Position ${pos} already occupied.`);
-                return;
-            }
-        }
-
-        let shipPieces = [];
-        for (let i = 0; i < shipSize; i++) {
-            let shipElement = document.createElement('div');
-            shipElement.setAttribute('id', ship);
-            shipElement.setAttribute('class', `ship ${orientation} tile-${i + 1}`);
-            shipPieces.push(shipElement);
-        }
-
-        for (let i = 0; i < shipSize; i++) {
-            let pos = document.getElementById(`p1@${positions[i]}`);
-            pos.appendChild(shipPieces.at(i));
-        }
-    }
+    // function placeShip(ship, position, orientation) {
+    //     const shipSize = getShipSize(ship.id);
+    //
+    //     let positions = calculateShipTiles(position, orientation, shipSize);
+    //     if (positions.length !== shipSize) {
+    //         console.error("Cannot place ship. Out of bounds");
+    //         return;
+    //     }
+    //
+    //     // Verifying overlapping
+    //     for (let pos of positions) {
+    //         const tile = document.getElementById(`p1@${pos}`);
+    //         if (!tile) {
+    //             console.error(`Not valid position: ${pos}`);
+    //             return;
+    //         }
+    //         if (tile.hasChildNodes()) {
+    //             console.error(`Position ${pos} already occupied.`);
+    //             return;
+    //         }
+    //     }
+    //
+    //     let shipPieces = [];
+    //     for (let i = 0; i < shipSize; i++) {
+    //         let shipElement = document.createElement('div');
+    //         shipElement.setAttribute('id', ship);
+    //         shipElement.setAttribute('class', `ship ${orientation} tile-${i + 1}`);
+    //         shipPieces.push(shipElement);
+    //     }
+    //
+    //     for (let i = 0; i < shipSize; i++) {
+    //         let pos = document.getElementById(`p1@${positions[i]}`);
+    //         pos.appendChild(shipPieces.at(i));
+    //     }
+    // }
 
     function validatePlacement(ship, position, orientation, shipSize) {
         let positions = calculateShipTiles(position, orientation, shipSize);
         if (positions.length !== shipSize) {
-            console.log("Cannot place ship. Out of bounds");
             return false;
         }
 
@@ -131,11 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let pos of positions) {
             const tile = document.getElementById(`p1@${pos}`);
             if (!tile) {
-                console.log(`Not valid position: ${pos}`);
+                return false;
+            }
+            if (tile.classList.contains('row-0') || tile.classList.contains('col-0')) {
                 return false;
             }
             if (tile.hasChildNodes()) {
-                console.log(`Position ${pos} already occupied.`);
                 return false;
             }
         }
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateBoard(playerNum) {
-        const letters = ['-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+        const letters = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
         const boardSize = letters.length;
         let board = document.createElement('div');
 
@@ -157,12 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const tile = document.createElement('div');
             tile.setAttribute('class', 'cell');
 
-            if (row === 0 && col !== 0) {
+            if (row === 0) {
+                tile.classList.add('row-0');
                 tile.textContent = col.toString();
             } else if (col !== 0) {
                 tile.setAttribute('id', `p${playerNum}@${letters[row] + col}`);
             }
-            if (col === 0 && row !== 0) {
+            if (col === 0) {
+                tile.classList.add('col-0');
                 tile.textContent = letters[row].toUpperCase();
             }
             board.appendChild(tile);
@@ -170,27 +172,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return board;
     }
 
-    function createGameBoards(amountPlayers) {
-        let playerBoardPlace = document.getElementById('player-space');
-        let opponentsPlace = document.getElementById('opponents-space');
-
-        let casillas = generateBoard(1).childNodes;
-        [...casillas].forEach(casilla => {
-            playerBoardPlace.appendChild(casilla)
-        });
-
-        for (let i = 2; i <= amountPlayers; i++) {
-            let opponentPlace = document.createElement('div');
-            opponentPlace.setAttribute('class', 'player-container');
-
-            let opponentName = document.createElement('span');
-            opponentName.setAttribute('id', `p${i}-name`);
-            opponentPlace.appendChild(opponentName);
-
-            opponentPlace.appendChild(generateBoard(i));
-            opponentsPlace.appendChild(opponentPlace);
-        }
-    }
+    // function createGameBoards(amountPlayers) {
+    //     let playerBoardPlace = document.getElementById('player-space');
+    //     let opponentsPlace = document.getElementById('opponents-space');
+    //
+    //     let casillas = generateBoard(1).childNodes;
+    //     [...casillas].forEach(casilla => {
+    //         playerBoardPlace.appendChild(casilla)
+    //     });
+    //
+    //     for (let i = 2; i <= amountPlayers; i++) {
+    //         let opponentPlace = document.createElement('div');
+    //         opponentPlace.setAttribute('class', 'player-container');
+    //
+    //         let opponentName = document.createElement('span');
+    //         opponentName.setAttribute('id', `p${i}-name`);
+    //         opponentPlace.appendChild(opponentName);
+    //
+    //         opponentPlace.appendChild(generateBoard(i));
+    //         opponentsPlace.appendChild(opponentPlace);
+    //     }
+    // }
 
     function createGameBoard4Ships() {
         let shipBoardPlace = document.getElementById('ship-side');
@@ -223,6 +225,19 @@ document.addEventListener('DOMContentLoaded', () => {
         evt.dataTransfer.setData('text/plain', this.id);
     }
 
+    function handleDragEnd() {
+        this.style.opacity = '1';
+        this.shipInstance = dragElement;
+        dragElement = null;
+
+        iCells.forEach(function (item) {
+            if (!item.hasChildNodes()) {
+                item.classList.remove('over');
+                item.classList.remove('cant');
+            }
+        });
+    }
+
     function handleDragOver(evt) {
         if (evt.preventDefault) {
             evt.preventDefault();
@@ -233,8 +248,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleDragEnter() {
-        let position = this.id;
-        position = position.slice(3);
+        let position = this.id.split('@')[1];
+
+        if (!position) { return; }
 
         iCells.forEach(function (item) {
             if (!item.hasChildNodes()) {
@@ -271,7 +287,11 @@ document.addEventListener('DOMContentLoaded', () => {
             evt.stopPropagation();
         }
 
-        if (!this.classList.contains("cant")) {
+        let cell = this.id.split('@')[1];
+
+        if (!cell) { return; }
+
+        if (!this.classList.contains("cant") && validatePlacement(dragElement.name, cell, dragElement.orientation, dragElement.size)) {
             let elId = evt.dataTransfer.getData("text/plain");
             let elShip = document.getElementById(elId);
 
@@ -325,19 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return false;
     }
 
-    function handleDragEnd() {
-        this.style.opacity = '1';
-        this.shipInstance = dragElement;
-        dragElement = null;
-
-        iCells.forEach(function (item) {
-            if (!item.hasChildNodes()) {
-            item.classList.remove('over');
-            item.classList.remove('cant');
-            }
-        });
-    }
-
     createGameBoard4Ships();
 
     let iShips = document.querySelectorAll('.ship');
@@ -370,9 +377,4 @@ document.addEventListener('DOMContentLoaded', () => {
         item.addEventListener('dragenter', handleDragEnter, false);
         item.addEventListener('drop', handleDrop, false);
     });
-
-
-
-    //createGameBoards(3);
-    //placeShip("carrier", "d4", "horizontal");
 });

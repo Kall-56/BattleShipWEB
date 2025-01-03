@@ -9,7 +9,7 @@
         <meta name="author" content="Alex Monsalve"/>
         <meta name="robots" content="noindex,follow"/>
         <link rel="icon" sizes="16x16 32x32 64x64" href="boat.ico" type="image/x-icon"/>
-        <link rel="stylesheet" href="assets/css/fonts.css" type="text/css">
+        <link rel="stylesheet" href="assets/css/new-fonts.css" type="text/css">
         <link rel="stylesheet" href="index-style.css" type="text/css"/>
         <link rel="stylesheet" href="assets/css/header-style.css" type="text/css"/>
         <link rel="stylesheet" href="assets/css/footer-style.css" type="text/css"/>
@@ -17,26 +17,20 @@
     <body>
         <header>
             <h1>BattleShip WEB</h1>
-            <form method="post" action="#">
-                <label for="username">Please enter your username :
-                    <input id="username" name="username" type="text" placeholder="User1234" required />
-                </label>
-                <input type="submit" value="( Submit )" />
-            </form>
             <nav class="menu-buttons">
                     <ul>
-                        <li><a href="components/game.html"><button class="main-button" id="single-player-bt">Single Player</button></a></li>
+                        <li><a class="main-button" id="single-player-bt" href="components/game.html">Single Player</a></li>
                         <li><div class="main-button" id="multiplayer-bt">
                             <span>MultiPlayer</span>
                             <ul>
-                                <li><a href="components/game.html"><button class="sub-button" id="2-players-bt">2 Players</button></a></li>
-                                <li><a href="components/game.html"><button class="sub-button" id="3-players-bt">3 Players</button></a></li>
-                                <li><a href="components/game.html"><button class="sub-button" id="4-players-bt">4 Players</button></a></li>
+                                <li><a href="components/game.html" class="sub-button" id="2-players-bt">2 Players</a></li>
+                                <li><a href="components/game.html" class="sub-button" id="3-players-bt">3 Players</a></li>
+                                <li><a href="components/game.html" class="sub-button" id="4-players-bt">4 Players</a></li>
                             </ul>
                         </div></li>
-                        <li><a href="#"><button class="main-button" id="tournament-bt">Tournament</button></a></li>
-                        <li><a href="#leaderboard-header"><button class="main-button" id="leaderboard-bt">Leaderboard</button></a></li>
-                        <li><a href="#rules-header"><button class="main-button" id="rules-bt">Rules</button></a></li>
+                        <li><a class="main-button" id="tournament-bt" href="#">Tournament</a></li>
+                        <li><a class="main-button" id="leaderboard-bt" href="#leaderboard-header">Leaderboard</a></li>
+                        <li><a class="main-button" id="rules-bt" href="#rules-header">Rules</a></li>
                     </ul>
             </nav>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
@@ -58,11 +52,11 @@
                         </p>
                         <h4>Fleet of Ships:</h4>
                         <ul>
-                            <li><b>1 Carrier</b> (5 cells)</li>
-                            <li><b>1 BattleShip</b> (4 cells)</li>
-                            <li><b>1 Cruiser</b> (3 cells)</li>
-                            <li><b>1 Submarine</b> (3 cells)</li>
-                            <li><b>1 Destroyer</b> (2 cells)</li>
+                            <li><strong>1 Carrier</strong> (5 cells)</li>
+                            <li><strong>1 BattleShip</strong> (4 cells)</li>
+                            <li><strong>1 Cruiser</strong> (3 cells)</li>
+                            <li><strong>1 Submarine</strong> (3 cells)</li>
+                            <li><strong>1 Destroyer</strong> (2 cells)</li>
                         </ul>
                     </li>
                     <li><h3>Preparation:</h3>
@@ -187,5 +181,6 @@
                 <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
             </svg>
         </footer>
+        <script src="index.js"></script>
     </body>
 </html>

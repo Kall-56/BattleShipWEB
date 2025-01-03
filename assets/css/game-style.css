@@ -1,4 +1,4 @@
-@import url('fonts.css');
+@import url('new-fonts.css');
 
 body {
     width: auto;
@@ -14,6 +14,11 @@ body {
 main {
     display: flex;
     overflow: hidden;
+}
+
+aside {
+    display: flex;
+    flex-direction: column;
 }
 
 .user-side, .game-side {
@@ -116,6 +121,7 @@ main {
     height: 65%;
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 1em;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.8);
     color: #3182e4;
     z-index: 2;
 }
@@ -191,4 +197,127 @@ main {
 
 .powerup-bt:hover {
     background-color: rgba(49, 59, 115, 0.8);
+}
+
+/* --------------------------------------------- */
+.player-ready {
+    text-align: center;
+    width: 600px;
+    margin-left: 5%;
+}
+
+.player-ready p {
+    text-align: left;
+    text-wrap: nowrap;
+}
+
+#user {
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.username {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#username {
+    width: 250px;
+}
+
+#main-options {
+    width: 600px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player-ready .username input[type="text"] {
+    width: 300px;
+}
+
+.multiplayer-game {
+    display: flex;
+    justify-content: space-between;
+}
+
+.player-ready button {
+    width: 150px;
+    height: 30px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #0077b6;
+}
+
+.player-ready button:hover:not(:disabled) {
+    background-color: #00b4d8;
+}
+
+.player-ready input[type="text"] {
+    width: 100%;
+    background-color: #1e1e2f;
+    color: white;
+}
+
+.player-ready input::placeholder {
+    color: #999;
+}
+
+button.server-operation,
+button.client-operation {
+    width: 150px;
+    height: 30px;
+    background-color: #0077b6;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.server-operation:disabled,
+.client-operation:disabled {
+    background-color: rgba(125, 125, 125, 0.8);
+    color: rgba(255, 255, 255, 0.8);
+    cursor: not-allowed;
+}
+
+.server-operation:hover:not(:disabled),
+.client-operation:hover:not(:disabled) {
+    background-color: #00b4d8;
+}
+
+.game-move {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.player-ready input#game-id,
+.player-ready input#move {
+    width: 300px;
+    height: 40px;
+    background-color: #1e1e2f;
+    color: white;
+}
+
+#messages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #1e1e2f;
+    min-height: 40px;
+    overflow-y: auto;
+    color: white;
+}
+
+.start-game {
+    width: 100px;
+    height: 50px;
 }

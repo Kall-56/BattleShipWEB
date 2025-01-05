@@ -23,6 +23,7 @@
                     <li><a class="main-button" id="tournament-bt" href="#">Tournament</a></li>
                     <li><a class="main-button" id="leaderboard-bt" href="../index.html">Leaderboard</a></li>
                     <li><a class="main-button" id="rules-bt" href="../index.html">Rules</a></li>
+                    <li id="leave-space"></li>
                 </ul>
             </nav>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
@@ -47,19 +48,23 @@
                             <form id="user" action="#" method="POST">
                                 <p>Insert your username:</p>
                                 <div class="username">
-                                    <input type="text" id="username" placeholder="e.g: Sandro2070"/>
+                                    <label for="username">
+                                        <input id="username" name="username" type="text" placeholder="User1234" required />
+                                    </label>
                                     <button type="button" id="submit-user" class="server-operation">Submit</button>
                                 </div>
                             </form>
                             <div id="options">
                                 <div id="main-options">
-                                    <button id="create-game" class="server-operation">Create a new game</button>
+                                    <button id="create-game" class="server-operation">Create ID</button>
                                     <button id="send-ships" class="server-operation">Send your fleet</button>
                                     <button id="leave-game" class="server-operation">Leave game!</button>
-                                    <button id="close-connection" class="client-operation">Close server connection</button>
+                                    <button id="close-connection" class="client-operation">Close connection</button>
                                 </div>
                                 <div class="multiplayer-game">
-                                    <input type="text" id="game-id" placeholder="ID del juego" />
+                                    <label for="game-id">
+                                        <input name="game-id" type="text" id="game-id" placeholder="ID del juego" />
+                                    </label>
                                     <button id="join-game" class="server-operation">Join game</button>
                                 </div>
                                 <div id="messages"></div>
@@ -108,7 +113,7 @@
         </main>
         <footer>
             <p>No Copyright - <a href="https://www.ucab.edu.ve/">ucab.edu.ve</a></p>
-            <p>by Alex Monsalve.</p>
+            <p>by Alex Monsalve & Alessandro Ventresca.</p>
             <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
                 <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
             </svg>

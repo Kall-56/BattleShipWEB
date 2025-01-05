@@ -1,4 +1,6 @@
 import { createGameBoards } from "./game.js";
+import { eliminateListeners } from "./game.js";
+import { initializeShips } from "./game.js";
 
 let shipsSend = false;
 let gameJoined = false;
@@ -68,7 +70,7 @@ function handleJoinGame(gameId, playerNames, playerCount) {
             players.push(name);
         }
     }
-    changeMessage('Someone joined the game lobby');
+    changeMessage(`${playerNames[playerCount-1]} joined the game lobby`);
 }
 
 function handleWait() {
@@ -81,15 +83,17 @@ function handleGameStart(turn) {
     document.getElementById('turn-user').innerText = turn;
     changeMessage('Game started!');
 
-    // Poner y/o quitar clases, ids que hagan falta en el DOM
-
-    // En el tablero del propio jugador hay que mostrar los barcos
-
-    // En algún lado de la pantalla de juego normal (cuando comienza) poner tanto el botón de desconexión y abandono en algún lado
-    // como el bloque para colocar los mensajes que lleguen del servidor websocket
-
     createGameBoards(amountPlayers);
-    document.getElementById('ship-side').hidden = true;
+    document.querySelector('.user-side').appendChild(document.getElementById('messages'));
+    document.getElementById('leave-space').appendChild(document.getElementById('leave-game'));
+    document.getElementById('leave-space').appendChild(document.getElementById('close-connection'));
+
+    document.getElementById('ship-side').style.display = 'none';
+    document.querySelector('.user-side').style.display = 'flex';
+    document.querySelector('.game-side').style.display = 'flex';
+    document.getElementById('turn-ui').style.display = 'block';
+    eliminateListeners();
+
 
     const opponentBoards = [...document.getElementsByClassName('table opponent')];
     for (let i = 0; i < opponentBoards.length; i++) {
@@ -122,29 +126,84 @@ function handleMove(move, hit, opponentName, turn) {
 
 function handleGameFinished(winner) {
     // Mostrar quien es el ganador
-
-    // Preguntar al usuario si quiere volver a jugar o no
+    changeMessage(`${winner} win the battle!`);
+    const userResponse = confirm("Play another game?");
     // Si sí: borrar tableros, abandonar la partida, vaciar [players] y volver a mostrar la pantalla de posicionamiento, reiniciando también
     //    el [actualGameId], [shipsSend] y [amountPlayers]. Solo habilitar botones para [unirse], [crear], [mandar flota]
-    // Si no: desconectar al jugador y mandarlo al [Home Menu]
+    if (userResponse) {
+        resetGame();
+    } else {
+        window.location.href = "../index.html";
+    }
+}
+
+function resetGame() {
+    const elsShip = document.querySelectorAll('.ship');
+    const wareHouse = document.querySelector('.ship-warehouse');
+    elsShip.forEach(function (item) {
+        if (item.tagName !== "DIV") {
+            wareHouse.appendChild(item);
+            item.style.position = 'relative';
+            item.style.left = 'auto';
+            item.style.bottom = 'auto';
+            item.style.top = 'auto';
+        } else {
+            item.remove();
+        }
+    });
+    const opponents = document.getElementById('opponents-space').childNodes;
+    opponents.forEach(function (item) {
+        item.remove();
+    });
+    const playerCells = document.getElementById('player-space').childNodes;
+    playerCells.forEach(function (item) {
+        item.remove();
+    });
+
+    initializeShips();
+
+    document.getElementById('carrier').style.maxWidth = '15rem';
+    document.getElementById('battleship').style.maxWidth = '12rem';
+    document.getElementById('cruiser').style.maxWidth = '9rem';
+    document.getElementById('submarine').style.maxWidth = '9rem';
+    document.getElementById('destroyer').style.maxWidth = '6rem';
+
+    document.getElementById('main-options').appendChild(document.getElementById('leave-game'));
+    document.getElementById('main-options').appendChild(document.getElementById('close-connection'));
+    document.getElementById('ship-side').style.display = 'flex';
+    document.querySelector('.user-side').style.display = 'none';
+    document.querySelector('.game-side').style.display = 'none';
+    document.getElementById('turn-ui').style.display = 'none';
 }
 
 function handleGameLost(message) {
-    // Notificar que el jugador perdió, dando algún indicativo visual de esto. Sin embargo, mantenerlo en partida
-    // Capaz resaltar el botón de abandonar
+    changeMessage(`End of the Game, You lost`);
+    const userResponse = confirm("Play another game?");
+    if (userResponse) {
+        resetGame();
+    } else {
+        window.location.href = "../index.html";
+    }
 }
 
 function handleLeftGame() {
-    // Preguntar al usuario si quiere volver a jugar o no
-    // Si sí: borrar tableros, abandonar la partida, vaciar [players] y volver a mostrar la pantalla de posicionamiento, reiniciando también
-    //    el [actualGameId], [shipsSend] y [amountPlayers]. Solo habilitar botones para [unirse], [crear], [mandar flota]
-    // Si no: desconectar al jugador y mandarlo al [Home Menu]
+    const userResponse = confirm("Play another game?");
+    if (userResponse) {
+        resetGame();
+    } else {
+        window.location.href = "../index.html";
+    }
 }
 
 function handlePlayerLeft(playerCount, playerName, turn) {
+    changeMessage(`${playerName} has left the game`);
+    document.getElementById('turn-user').innerText = turn;
+    for (let i = 0; i < playerCount; i++) {
+        if (players[i].includes(name)) {
+            players[i].pop();
+        }
+    }
     // Borrar el tablero del jugador que se fue
-    // Cambiar el texto sobre quien es el turno actual
-    // Creo que ya ...?
 }
 
 // Maneja los mensajes recibidos

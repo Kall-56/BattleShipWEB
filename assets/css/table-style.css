@@ -7,7 +7,7 @@
     margin: 2em 0 0 0;
     padding: 0;
     gap: 0.3%;
-    backdrop-filter: blur(3px);
+    /*backdrop-filter: blur(3px);*/
     position: relative;
     align-self: center;
 }
@@ -39,11 +39,11 @@
 }
 
 .table .cell[id].miss {
-    background-color: rgba(255, 203, 0, 0.5);
+    background-color: rgba(76, 17, 255, 0.5);
 }
 
 .table .cell[id].hit {
-    background-color: rgba(255, 0, 0, 0.5);
+    background-color: rgba(255, 13, 105, 0.5);
 }
 
 .cell[id] {

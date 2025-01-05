@@ -14,6 +14,7 @@ body {
 main {
     display: flex;
     overflow: hidden;
+    height: 70vh;
 }
 
 aside {
@@ -22,7 +23,7 @@ aside {
 }
 
 .user-side, .game-side {
-    display: flex;
+    display: none;
     position: relative;
     height: 70vh;
 }
@@ -69,7 +70,7 @@ aside {
 
 #user-name {
     left: 20%;
-    color: blue;
+    color: white;
 }
 
 .user-points {
@@ -78,7 +79,7 @@ aside {
 
 #p3-name, #p4-name,
 #p2-name {
-    color: red;
+    color: white;
 }
 
 #p2-name {
@@ -97,6 +98,7 @@ aside {
 }
 
 #turn-ui {
+    display: none;
     position: absolute;
     left: 55%;
     z-index: 1;
@@ -119,10 +121,9 @@ aside {
     left: 12.5%;
     width: 75%;
     height: 65%;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: transparent;
     border-radius: 1em;
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.8);
-    color: #3182e4;
+    color: white;
     z-index: 2;
 }
 
@@ -204,18 +205,20 @@ aside {
     text-align: center;
     width: 600px;
     margin-left: 5%;
+    z-index: 3;
 }
 
 .player-ready p {
     text-align: left;
     text-wrap: nowrap;
+    margin: 3%;
 }
 
 #user {
     text-align: center;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 
@@ -228,6 +231,7 @@ aside {
 
 #username {
     width: 250px;
+    margin-right: 0.5rem;
 }
 
 #main-options {
@@ -236,6 +240,7 @@ aside {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 1rem;
 }
 
 .player-ready .username input[type="text"] {
@@ -244,7 +249,8 @@ aside {
 
 .multiplayer-game {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
 }
 
 .player-ready button {
@@ -262,8 +268,8 @@ aside {
 
 .player-ready input[type="text"] {
     width: 100%;
-    background-color: #1e1e2f;
-    color: white;
+    background-color: white;
+    color: #1e1e2f;
 }
 
 .player-ready input::placeholder {
@@ -272,12 +278,14 @@ aside {
 
 button.server-operation,
 button.client-operation {
-    width: 150px;
-    height: 30px;
+    width: auto;
+    height: 2rem;
+    border-radius: 0.5rem;
     background-color: #0077b6;
     color: white;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-family: RocknRollOne, serif;
 }
 
 .server-operation:disabled,
@@ -302,8 +310,11 @@ button.client-operation {
 .player-ready input#move {
     width: 300px;
     height: 40px;
-    background-color: #1e1e2f;
-    color: white;
+    background-color: white;
+    border-radius: 0.5rem;
+    color: #1e1e2f;
+    font-family: RocknRollOne, serif;
+    margin-right: 1.5rem;
 }
 
 #messages {
@@ -311,10 +322,15 @@ button.client-operation {
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-color: #1e1e2f;
-    min-height: 40px;
+    background-color: rgba(255, 255, 255, 0.95);
+    min-height: 4rem;
     overflow-y: auto;
-    color: white;
+    border-radius: 0.5rem;
+    color: #1e1e2f;
+    font-family: RocknRollOne, serif;
+    margin-top: 1rem;
+    width: 80%;
+    align-self: center;
 }
 
 .start-game {

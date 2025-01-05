@@ -18,23 +18,23 @@ form {
     display: flex;
     justify-content: center;
     align-content: center;
-    color: #3182e4;
+    color: white;
     font-family: ReggaeOne, serif;
     font-size: 1em;
 }
 
 form input {
     background-color: transparent;
-    border: 0.15em transparent solid;
-    border-bottom-color: rgba(49, 130, 228, 0.8);
+    border: 0;
+    border-radius: 1rem;
     outline: none;
     font-family: RocknRollOne, serif;
-    color: #0053bd;
     padding: 0 0.5em;
 }
 
 form input[type='text']:focus {
-    border-bottom-color: #075fd0;
+    border-bottom: 0.2rem solid;
+    border-bottom-color: #1f1f1f;
 }
 
 form input:nth-child(2) {
@@ -81,58 +81,6 @@ form input:nth-child(2):hover {
 }
 
 .main-button:hover {
-    color: #22b2ff;
-    transform: scaleX(110%) translateY(10%);
-}
-
-#multiplayer-bt {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    align-items: center;
-    cursor: default;
-}
-
-#multiplayer-bt ul {
-    display: grid;
-    position: absolute;
-    list-style: none;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, auto);
-    gap: 0.3em;
-    align-items: center;
-    top: 100%;
-    width: 150%;
-}
-
-#multiplayer-bt ul li {
-    justify-content: center;
-    align-items: center;
-}
-
-#multiplayer-bt:hover {
-    color: #22b2ff;
-    transform: scale(100%);
-}
-
-#multiplayer-bt:hover .sub-button {
-    display: block;
-}
-
-.sub-button {
-    display: none;
-    padding: 0;
-    background-color: transparent;
-    background-size: cover;
-    border: none;
-    text-align: center;
-    font-family: ReggaeOne, serif;
-    font-size: 80%;
-    color: #3182e4;
-    cursor: pointer;
-}
-
-.sub-button:hover {
     color: #22b2ff;
     transform: scaleX(110%) translateY(10%);
 }

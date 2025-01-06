@@ -15,7 +15,7 @@ function sendMessage(socket, message) {
 }
 
 function enableReadyBt() {
-    return !(shipsSend && gameJoined);
+    ready.disabled = !(shipsSend && gameJoined);
 }
 
 function changeMessage(message) {
@@ -23,16 +23,16 @@ function changeMessage(message) {
 }
 
 function disableGameBts(disable) {
-    document.getElementById('create-game').disabled = disable;
-    document.getElementById('join-game').disabled = disable;
+    createGame.disabled = disable;
+    joinGame.disabled = disable;
     document.getElementById('game-id').disabled = disable;
 }
 
 function handleUserRegistration() {
     document.getElementById('username').disabled = true;
-    document.getElementById('submit-user').disabled = true;
+    submitUsername.disabled = true;
 
-    document.getElementById('send-ships').disabled = false;
+    sendFleet.disabled = false;
     disableGameBts(false);
     changeMessage('Your user has been registered');
 
@@ -43,7 +43,7 @@ function handleUserRegistration() {
 
 function handleFleetEstablished() {
     shipsSend = true;
-    document.getElementById('ready').disabled = enableReadyBt();
+    enableReadyBt();
     changeMessage('Your fleet has been established');
 }
 
@@ -51,9 +51,9 @@ function handleGameCreation(gameId) {
     gameJoined = true;
     actualGameId = gameId;
     document.getElementById('game-id').value = gameId;
-    document.getElementById('leave-game').disabled = false;
+    leaveGame.disabled = false;
     disableGameBts(true);
-    document.getElementById('ready').disabled = enableReadyBt();
+    enableReadyBt();
     changeMessage(`Game created. ID: ${gameId}`);
 }
 
@@ -62,8 +62,8 @@ function handleJoinGame(gameId, playerNames, playerCount) {
     actualGameId = gameId;
     amountPlayers = playerCount;
     disableGameBts(true);
-    document.getElementById('leave-game').disabled = false;
-    document.getElementById('ready').disabled = enableReadyBt();
+    enableReadyBt();
+    leaveGame.disabled = false;
 
     for (let name of playerNames) {
         if (!players.includes(name)) {
@@ -79,21 +79,22 @@ function handleWait() {
 }
 
 function handleGameStart(turn) {
-    document.getElementById('ready').disabled = true;
+    ready.disabled = true;
     document.getElementById('turn-user').innerText = turn;
     changeMessage('Game started!');
 
     createGameBoards(amountPlayers);
+
     document.querySelector('.user-side').appendChild(document.getElementById('messages'));
-    document.getElementById('leave-space').appendChild(document.getElementById('leave-game'));
-    document.getElementById('leave-space').appendChild(document.getElementById('close-connection'));
+    document.getElementById('leave-space').appendChild(leaveGame);
+    document.getElementById('leave-space').appendChild(closeConnection);
 
     document.getElementById('ship-side').style.display = 'none';
     document.querySelector('.user-side').style.display = 'flex';
     document.querySelector('.game-side').style.display = 'flex';
     document.getElementById('turn-ui').style.display = 'block';
-    eliminateListeners();
 
+    eliminateListeners();
 
     const opponentBoards = [...document.getElementsByClassName('table opponent')];
     for (let i = 0; i < opponentBoards.length; i++) {
@@ -102,7 +103,16 @@ function handleGameStart(turn) {
             const idMove = pos.id.split('@')[1];
             if (idMove) {
                 pos.addEventListener('click', () => {
-                    sendMessage(socket, { type: 'move', gameId: actualGameId, move: idMove, opponentName: players[pos.id.split('@')[0][1] - 1] });
+                    if (!(pos.classList.contains('hit') || pos.classList.contains('miss'))) {
+                        sendMessage(socket, {
+                            type: 'move',
+                            gameId: actualGameId,
+                            move: idMove,
+                            opponentName: players[pos.id.split('@')[0][1] - 1]
+                        });
+                    } else {
+                        changeMessage('That cell has already been attacked');
+                    }
                 });
             }
         });
@@ -111,14 +121,14 @@ function handleGameStart(turn) {
 
 function handleMove(move, hit, opponentName, turn) {
     const oppIndex = players.indexOf(opponentName);
-    // Hacer algo con estas clases para poder visualizarlo en el tablero
+
+    // Clases para identificar un hit o miss
     let hitClass = 'miss';
     if (hit) {
         hitClass = 'hit';
     }
-    document.getElementById(`p${oppIndex + 1}@${move}`).classList.add(hitClass);
 
-    // Cambiar el DOM para mostrar a quién le toca ahora
+    document.getElementById(`p${oppIndex + 1}@${move}`).classList.add(hitClass);
     document.getElementById('turn-user').innerText = turn;
     changeMessage(`${opponentName} has been attacked at: ${move} (${hit})`);
 
@@ -126,14 +136,16 @@ function handleMove(move, hit, opponentName, turn) {
 
 function handleGameFinished(winner) {
     // Mostrar quien es el ganador
-    changeMessage(`${winner} win the battle!`);
-    const userResponse = confirm("Play another game?");
-    // Si sí: borrar tableros, abandonar la partida, vaciar [players] y volver a mostrar la pantalla de posicionamiento, reiniciando también
-    //    el [actualGameId], [shipsSend] y [amountPlayers]. Solo habilitar botones para [unirse], [crear], [mandar flota]
+    changeMessage(`${winner} won the battle!`);
+    const userResponse = confirm(`${winner} won!. Want to stay in this lobby?`);
+
+    resetGame();
+    shipsSend = false;
+    enableReadyBt();
     if (userResponse) {
-        resetGame();
+        disableGameBts(true);
     } else {
-        window.location.href = "../index.html";
+        sendMessage(socket, { type: 'leave', gameId: obtainGameId() });
     }
 }
 
@@ -151,14 +163,13 @@ function resetGame() {
             item.remove();
         }
     });
-    const opponents = document.getElementById('opponents-space').childNodes;
-    opponents.forEach(function (item) {
-        item.remove();
-    });
-    const playerCells = document.getElementById('player-space').childNodes;
-    playerCells.forEach(function (item) {
-        item.remove();
-    });
+    const opponents = document.getElementById('opponents-space').children;
+    [...opponents].forEach((item) => { item.remove(); });
+
+    const playerCells = document.getElementById('player-space').children;
+    [...playerCells].forEach((item) => { item.remove(); });
+
+    document.getElementById('board-p1').remove();
 
     initializeShips();
 
@@ -168,8 +179,10 @@ function resetGame() {
     document.getElementById('submarine').style.maxWidth = '9rem';
     document.getElementById('destroyer').style.maxWidth = '6rem';
 
-    document.getElementById('main-options').appendChild(document.getElementById('leave-game'));
-    document.getElementById('main-options').appendChild(document.getElementById('close-connection'));
+    document.getElementById('main-options').appendChild(leaveGame);
+    document.getElementById('main-options').appendChild(closeConnection);
+    document.getElementById('options').appendChild(document.getElementById('messages'));
+
     document.getElementById('ship-side').style.display = 'flex';
     document.querySelector('.user-side').style.display = 'none';
     document.querySelector('.game-side').style.display = 'none';
@@ -177,33 +190,33 @@ function resetGame() {
 }
 
 function handleGameLost(message) {
-    changeMessage(`End of the Game, You lost`);
-    const userResponse = confirm("Play another game?");
-    if (userResponse) {
-        resetGame();
-    } else {
-        window.location.href = "../index.html";
-    }
+    changeMessage(message);
 }
 
-function handleLeftGame() {
-    const userResponse = confirm("Play another game?");
-    if (userResponse) {
+function handleLeftGame(started) {
+    if (started) {
         resetGame();
-    } else {
-        window.location.href = "../index.html";
     }
+    gameJoined = false;
+    enableReadyBt();
+    disableGameBts(false);
+    leaveGame.disabled = true;
+    changeMessage('You left the lobby!');
 }
 
-function handlePlayerLeft(playerCount, playerName, turn) {
+function handlePlayerLeft(playerCount, playerName, started, turn) {
     changeMessage(`${playerName} has left the game`);
     document.getElementById('turn-user').innerText = turn;
-    for (let i = 0; i < playerCount; i++) {
-        if (players[i].includes(name)) {
-            players[i].pop();
-        }
+
+    const playerIndex = players.indexOf(playerName);
+    if (started) {
+        // Borrar el tablero del jugador que se fue
+        document.getElementById(`board-p${playerIndex + 1}`).parentElement.remove();
+        // No lo borramos de la lista de players para poder seguir accediendo a los índices correctos en la partida
+    } else {
+        players.splice(playerIndex, 1);
+        enableReadyBt();
     }
-    // Borrar el tablero del jugador que se fue
 }
 
 // Maneja los mensajes recibidos
@@ -237,10 +250,10 @@ function handleMessage(message) {
             handleGameLost(message.message);
             break;
         case 'leftGame':
-            handleLeftGame();
+            handleLeftGame(message.started);
             break;
         case 'playerLeft':
-            handlePlayerLeft(message.playerCount, message.playerName, message.turn);
+            handlePlayerLeft(message.playerCount, message.playerName, message.started, message.turn);
             break;
         case 'error':
             changeMessage(message.message);
@@ -274,7 +287,7 @@ socket.addEventListener('close', () => {
     const closeButton = document.getElementById('close-connection');
     closeButton.remove();
 
-    // Mandarlo a [Home Menu]
+    window.location.href = '../index.html';
 });
 
 // DOM -----------------------------------------------------------------------------------------------------------------

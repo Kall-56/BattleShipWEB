@@ -1,6 +1,6 @@
 export function createGameBoards(amountPlayers) {
-    let playerBoardPlace = document.getElementById('player-space');
-    let opponentsPlace = document.getElementById('opponents-space');
+    const playerBoardPlace = document.getElementById('player-space');
+    const opponentsPlace = document.getElementById('opponents-space');
 
     [...(iCells)].forEach(casilla => {
         playerBoardPlace.appendChild(casilla)
@@ -143,42 +143,6 @@ function calculateShipTiles(startPos, orientation, size) {
     return positions;
 }
 
-// function placeShip(ship, position, orientation) {
-//     const shipSize = getShipSize(ship.id);
-//
-//     let positions = calculateShipTiles(position, orientation, shipSize);
-//     if (positions.length !== shipSize) {
-//         console.error("Cannot place ship. Out of bounds");
-//         return;
-//     }
-//
-//     // Verifying overlapping
-//     for (let pos of positions) {
-//         const tile = document.getElementById(`p1@${pos}`);
-//         if (!tile) {
-//             console.error(`Not valid position: ${pos}`);
-//             return;
-//         }
-//         if (tile.hasChildNodes()) {
-//             console.error(`Position ${pos} already occupied.`);
-//             return;
-//         }
-//     }
-//
-//     let shipPieces = [];
-//     for (let i = 0; i < shipSize; i++) {
-//         let shipElement = document.createElement('div');
-//         shipElement.setAttribute('id', ship);
-//         shipElement.setAttribute('class', `ship ${orientation} tile-${i + 1}`);
-//         shipPieces.push(shipElement);
-//     }
-//
-//     for (let i = 0; i < shipSize; i++) {
-//         let pos = document.getElementById(`p1@${positions[i]}`);
-//         pos.appendChild(shipPieces.at(i));
-//     }
-// }
-
 function validatePlacement(ship, position, orientation, shipSize) {
     let positions = calculateShipTiles(position, orientation, shipSize);
     if (positions.length !== shipSize) {
@@ -203,7 +167,6 @@ function validatePlacement(ship, position, orientation, shipSize) {
 
 function createGameBoard4Ships() {
     let shipBoardPlace = document.getElementById('ship-side');
-
     shipBoardPlace.appendChild(generateBoard(1));
 }
 
@@ -271,7 +234,7 @@ function handleDragEnter() {
 
     let iSum = 1;
     if (dragElement.orientation === "vertical") {
-        iSum = 10;
+        iSum = 11;
     }
 
     let cellClass = 'cant';
@@ -327,7 +290,7 @@ function handleDrop(evt) {
 
         let iSum = 1;
         if (dragElement.orientation === "vertical") {
-            iSum = 10;
+            iSum = 11;
         }
 
         for (let i = index + iSum; i < index + (dragElement.size * iSum); i += iSum) {
@@ -379,7 +342,6 @@ export function initializeShips() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeShips();
-
 });
 
 export function eliminateListeners() {

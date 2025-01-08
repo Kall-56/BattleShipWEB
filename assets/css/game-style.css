@@ -29,32 +29,29 @@ aside {
 }
 
 .game-side {
-    flex-direction: row;
+    display: flex;
+    flex-direction: column;
     width: 60%;
 }
 
-.player-container {
-    position: relative;
-    height: 70vh;
+.game-side #opponents-space {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
 }
 
-.player-container/*:nth-child(1)*/ {
+.player-container {
     display: flex;
+    position: relative;
     flex-direction: column;
     width: 100%;
 }
 
-/*.player-container:nth-child(2) {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    width: 50%;*/
-/*}*/
-
-/*.player-container:nth-child(3) {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    width: 50%;*/
-/*}*/
+.forth-player-side {
+    display: flex;
+    justify-items: center;
+    height: 50%;
+}
 
 .user-side {
     flex-direction: column;
@@ -100,13 +97,22 @@ aside {
 #turn-ui {
     display: none;
     position: absolute;
-    left: 55%;
+    left: 42.8%;
+    top: 11.3%;
     z-index: 1;
+    width: 25rem;
+    color: #3182e4;
 }
 
 #turn-ui h2 {
     font-family: ReggaeOne, serif;
-    margin-bottom: 0;
+    margin: 0;
+    display: inline;
+}
+
+#turn-ui p {
+    margin: 0 0 0 2%;
+    display: inline;
 }
 
 #ship-side .ship-warehouse {

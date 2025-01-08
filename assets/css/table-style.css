@@ -22,7 +22,7 @@
     margin-right: 2.5em;
 }
 
-.table.p2, .table.p3, .table.p4 {
+.table.opponent {
     width: 60%;     /* It will change dynamically depending on the number of players: 60% -> 2 players, 90% -> 3 & 4 players */
     height: 85%;
 }

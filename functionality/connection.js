@@ -78,12 +78,38 @@ function handleWait() {
     changeMessage('Waiting for players to be ready...');
 }
 
+function changeBoardSize() {
+    const elements = document.querySelectorAll('.opponent');
+    if (elements.length === 1) {
+        elements.forEach(el => {
+            el.style.width = '60%';
+            el.style.height = '85%';
+        });
+        document.getElementById('opponents-space').style.height = '100%';
+    } else if (elements.length === 2) {
+        elements.forEach(el => {
+            el.style.width = '90%';
+            el.style.height = '80%';
+        });
+        document.getElementById('opponents-space').style.height = '100%';
+    } else {
+        elements.forEach(el => {
+            el.style.width = '60%';
+            el.style.height = '85%';
+        });
+        elements[elements.length-1].style.width = '30%';
+        elements[elements.length-1].style.height = '80%';
+        document.getElementById('opponents-space').style.height = '50%';
+    }
+}
+
 function handleGameStart(turn) {
     ready.disabled = true;
     document.getElementById('turn-user').innerText = turn;
     changeMessage('Game started!');
 
     createGameBoards(amountPlayers);
+    changeBoardSize();
 
     document.querySelector('.user-side').appendChild(document.getElementById('messages'));
     document.getElementById('leave-space').appendChild(leaveGame);
@@ -170,6 +196,10 @@ function resetGame() {
     [...playerCells].forEach((item) => { item.remove(); });
 
     document.getElementById('board-p1').remove();
+    if (document.querySelector('.forth-player-side')) {
+        document.querySelector('.forth-player-side').remove();
+    }
+    document.getElementById('opponents-space').style.height = 'auto';
 
     initializeShips();
 

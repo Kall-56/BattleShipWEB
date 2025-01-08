@@ -15,7 +15,15 @@ export function createGameBoards(amountPlayers) {
         opponentPlace.appendChild(opponentName);
 
         opponentPlace.appendChild(generateBoard(i));
-        opponentsPlace.appendChild(opponentPlace);
+        opponentPlace.classList.add('opponent-table');
+        if (i !== 4) {
+            opponentsPlace.appendChild(opponentPlace);
+        } else {
+            const opponent4Div = document.createElement('div');
+            opponent4Div.setAttribute('class','forth-player-side');
+            opponent4Div.appendChild(opponentPlace);
+            document.querySelector('.game-side').appendChild(opponent4Div);
+        }
     }
 }
 

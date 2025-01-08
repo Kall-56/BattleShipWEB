@@ -5,6 +5,7 @@ import { initializeShips } from "./game.js";
 let shipsSend = false;
 let gameJoined = false;
 let actualGameId = '';
+let actualUser = '';
 
 let players = [];
 let amountPlayers = 1;
@@ -39,6 +40,7 @@ function handleUserRegistration() {
     const name = document.getElementById('username').value;
     document.getElementById('user-name').innerText = name;
     players.push(name);
+    actualUser = name;
 }
 
 function handleFleetEstablished() {
@@ -122,27 +124,26 @@ function handleGameStart(turn) {
 
     eliminateListeners();
 
-    const opponentBoards = [...document.getElementsByClassName('table opponent')];
-    for (let i = 0; i < opponentBoards.length; i++) {
-        const positions = opponentBoards[i].querySelectorAll('.cell');
-        positions.forEach((pos) => {
+    // Se le coloca el evento al tablero (padre de las celdas) y se aprovecha el bubbling
+    const opponentBoards = document.querySelectorAll('.table.opponent');
+    opponentBoards.forEach((board) => {
+        board.addEventListener('click', (event) => {
+            const pos = event.target.closest('.cell');
+            if (!pos) { return; }
+
             const idMove = pos.id.split('@')[1];
-            if (idMove) {
-                pos.addEventListener('click', () => {
-                    if (!(pos.classList.contains('hit') || pos.classList.contains('miss'))) {
-                        sendMessage(socket, {
-                            type: 'move',
-                            gameId: actualGameId,
-                            move: idMove,
-                            opponentName: players[pos.id.split('@')[0][1] - 1]
-                        });
-                    } else {
-                        changeMessage('That cell has already been attacked');
-                    }
+            if (idMove && !(pos.classList.contains('hit') || pos.classList.contains('miss'))) {
+                sendMessage(socket, {
+                    type: 'move',
+                    gameId: actualGameId,
+                    move: idMove,
+                    opponentName: players[pos.id.split('@')[0][1] - 1]
                 });
+            } else {
+                changeMessage('You cannot attack there!');
             }
         });
-    }
+    });
 }
 
 function handleMove(move, hit, opponentName, turn) {
@@ -161,21 +162,22 @@ function handleMove(move, hit, opponentName, turn) {
 }
 
 function handleGameFinished(winner) {
-    // Mostrar quien es el ganador
     changeMessage(`${winner} won the battle!`);
-    const userResponse = confirm(`${winner} won!. Want to stay in this lobby?`);
 
     resetGame();
     shipsSend = false;
     enableReadyBt();
-    if (userResponse) {
-        disableGameBts(true);
-    } else {
-        sendMessage(socket, { type: 'leave', gameId: obtainGameId() });
-    }
+    disableGameBts(true);
 }
 
 function resetGame() {
+    for (let i = 0; i < players.length; i++) {
+        if (players[i] === -1) {
+            players.splice(i, 1);
+        }
+    }
+    console.log(players);
+
     const elsShip = document.querySelectorAll('.ship');
     const wareHouse = document.querySelector('.ship-warehouse');
     elsShip.forEach(function (item) {
@@ -189,11 +191,11 @@ function resetGame() {
             item.remove();
         }
     });
-    const opponents = document.getElementById('opponents-space').children;
-    [...opponents].forEach((item) => { item.remove(); });
+    const opponents = [...document.getElementById('opponents-space').children];
+    opponents.forEach((item) => { item.remove(); });
 
-    const playerCells = document.getElementById('player-space').children;
-    [...playerCells].forEach((item) => { item.remove(); });
+    const playerCells = [...document.getElementById('player-space').children];
+    playerCells.forEach((item) => { item.remove(); });
 
     document.getElementById('board-p1').remove();
     if (document.querySelector('.forth-player-side')) {
@@ -224,9 +226,12 @@ function handleGameLost(message) {
 }
 
 function handleLeftGame(started) {
+    players = [];
+    players.push(actualUser);
     if (started) {
         resetGame();
     }
+    shipsSend = false;
     gameJoined = false;
     enableReadyBt();
     disableGameBts(false);
@@ -238,11 +243,15 @@ function handlePlayerLeft(playerCount, playerName, started, turn) {
     changeMessage(`${playerName} has left the game`);
     document.getElementById('turn-user').innerText = turn;
 
+    amountPlayers--;
+
     const playerIndex = players.indexOf(playerName);
     if (started) {
         // Borrar el tablero del jugador que se fue
         document.getElementById(`board-p${playerIndex + 1}`).parentElement.remove();
-        // No lo borramos de la lista de players para poder seguir accediendo a los índices correctos en la partida
+        // Reemplazar el string del jugador para poder quitarlo al finalizar el juego
+        // De mientras, dejarlo como -1 para mantener los índices de los otros jugadores
+        players = players.with(playerIndex, -1);
     } else {
         players.splice(playerIndex, 1);
         enableReadyBt();
@@ -402,8 +411,8 @@ leaveGame.addEventListener('click', () => {
 
 const closeConnection = document.getElementById('close-connection');
 closeConnection.addEventListener('click', () => {
-    const response = confirm('¿Estás seguro de que deseas cerrar la conexión con el servidor de WebSocket?\n\n' +
-        'Si la cierras, no podrás enviar ni recibir más mensajes y, de acuerdo a esta implementación, tendrás que recargar la página.');
+    const response = confirm('Are you sure you do not want to continue playing?\n' +
+        'To play again just select "multiplayer" on the home menu');
 
     if (response) {
         socket.close();

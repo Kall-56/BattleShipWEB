@@ -64,7 +64,7 @@ function handleJoinGame(gameId, playerNames, playerCount) {
     actualGameId = gameId;
     amountPlayers = playerCount;
     disableGameBts(true);
-    enableReadyBt();
+    //enableReadyBt();
     leaveGame.disabled = false;
 
     for (let name of playerNames) {
@@ -102,6 +102,30 @@ function changeBoardSize() {
         elements[elements.length-1].style.width = '30%';
         elements[elements.length-1].style.height = '80%';
         document.getElementById('opponents-space').style.height = '50%';
+    }
+}
+
+function boardSizeOnPlayerLeft() {
+    const elements = document.querySelectorAll('.opponent');
+    const elementsParent = document.querySelectorAll('.opponent-table');
+    if (document.querySelector('.forth-player-side')) {
+        elementsParent.forEach(el => {
+            document.getElementById('opponents-space').appendChild(el);
+        });
+        document.querySelector('.forth-player-side').remove();
+    }
+    if (elements.length === 1) {
+        elements.forEach(el => {
+            el.style.width = '60%';
+            el.style.height = '85%';
+        });
+        document.getElementById('opponents-space').style.height = '100%';
+    } else if (elements.length === 2) {
+        elements.forEach(el => {
+            el.style.width = '90%';
+            el.style.height = '80%';
+        });
+        document.getElementById('opponents-space').style.height = '100%';
     }
 }
 
@@ -248,10 +272,14 @@ function handlePlayerLeft(playerCount, playerName, started, turn) {
     const playerIndex = players.indexOf(playerName);
     if (started) {
         // Borrar el tablero del jugador que se fue
+        console.log(document.getElementById(`board-p${playerIndex + 1}`).parentElement);
+        console.log(document.getElementById('hijo: '));
+        console.log(document.getElementById(`board-p${playerIndex + 1}`));
         document.getElementById(`board-p${playerIndex + 1}`).parentElement.remove();
         // Reemplazar el string del jugador para poder quitarlo al finalizar el juego
         // De mientras, dejarlo como -1 para mantener los índices de los otros jugadores
         players = players.with(playerIndex, -1);
+        boardSizeOnPlayerLeft();
     } else {
         players.splice(playerIndex, 1);
         enableReadyBt();

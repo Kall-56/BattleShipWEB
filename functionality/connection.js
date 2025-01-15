@@ -7,6 +7,37 @@ let gameJoined = false;
 let actualGameId = '';
 let actualUser = '';
 
+const powerUps = {
+    sonar: {
+        cost: 5,
+        enable: true,
+    },
+    attackAircraft: {
+        cost: 10,
+        enable: true,
+    },
+    mine: {
+        cost: 5,
+    },
+    shield: {
+        cost: 15,
+        enable: true,
+        turnsActive: 3,
+    },
+    missiles: {
+        cost: 15,
+        turnsWait: 5,
+    },
+    repair: {
+        cost: 10,
+        enable: true,
+    },
+    emp: {
+        cost: 25,
+        turnsWait: 10,
+    }
+}
+
 let players = [];
 let amountPlayers = 1;
 
@@ -359,22 +390,22 @@ socket.addEventListener('close', () => {
 
 // DOM -----------------------------------------------------------------------------------------------------------------
 function obtainShips() {
-    const ships = [];
+    const ships = {};
     const shipsNames = ['carrier', 'destroyer', 'cruiser', 'submarine', 'battleship'];
 
     shipsNames.forEach(shipName => {
         const shipElement = document.getElementById(shipName);
         if (!shipElement || !shipElement.shipInstance) {
             console.error(`Ship not found: ${shipName}`);
-            return [];
+            return {};
         }
 
         const positions = shipElement.shipInstance.cellList.map(cell => cell.id.split('@')[1]);
         if (positions.length === 0) {
             console.error('Set up all your ships on the board!');
-            return [];
+            return {};
         }
-        ships.push(positions);
+        ships[shipName] = positions;
     });
     return ships;
 }
@@ -419,7 +450,7 @@ const sendFleet = document.getElementById('send-ships');
 sendFleet.addEventListener('click', () => {
     const ships = obtainShips();
 
-    if (ships.length !== 5) {
+    if (!ships) {
         alert('Place all the ships before sending them!');
     }
     else {
@@ -446,3 +477,25 @@ closeConnection.addEventListener('click', () => {
         socket.close();
     }
 });
+
+// POWERUPS ------------------------------------------------------------------------------------------------------------
+const sonarBt = document.getElementById('sonar');
+sonarBt.addEventListener('click', () => {});
+
+const aircraftAttackBt = document.getElementById('attack-aircraft');
+aircraftAttackBt.addEventListener('click', () => {});
+
+const mineBt = document.getElementById('sea-mine');
+mineBt.addEventListener('click', () => {});
+
+const shieldBt = document.getElementById('defensive-shield');
+shieldBt.addEventListener('click', () => {});
+
+const missilesBt = document.getElementById('cruise-missile');
+missilesBt.addEventListener('click', () => {});
+
+const repairBt = document.getElementById('quick-repair');
+repairBt.addEventListener('click', () => {});
+
+const empBt = document.getElementById('emp-attack');
+empBt.addEventListener('click', () => {});

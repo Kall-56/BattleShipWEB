@@ -9,31 +9,22 @@ let actualUser = '';
 
 const powerUps = {
     sonar: {
-        cost: 5,
         enable: true,
     },
     attackAircraft: {
-        cost: 10,
         enable: true,
     },
-    mine: {
-        cost: 5,
-    },
     shield: {
-        cost: 15,
         enable: true,
         turnsActive: 3,
     },
     missiles: {
-        cost: 15,
         turnsWait: 5,
     },
     repair: {
-        cost: 10,
         enable: true,
     },
     emp: {
-        cost: 25,
         turnsWait: 10,
     }
 }
@@ -179,6 +170,10 @@ function handleGameStart(turn) {
 
     eliminateListeners();
 
+    for (let i = 1; i < amountPlayers; i++) {
+        document.getElementById(`p${i + 1}-name`).textContent = players[i];
+    }
+
     // Se le coloca el evento al tablero (padre de las celdas) y se aprovecha el bubbling
     const opponentBoards = document.querySelectorAll('.table.opponent');
     opponentBoards.forEach((board) => {
@@ -317,6 +312,29 @@ function handlePlayerLeft(playerCount, playerName, started, turn) {
     }
 }
 
+function handlePowerUp(powerupData, turn) {
+    document.getElementById('turn-user').innerText = turn;
+    document.getElementById('total-points').textContent = powerupData.points;
+
+    switch (powerupData.type) {
+        case 'sonar':
+            changeMessage(`There's a ship at: ${powerupData.cell} on ${powerupData.opponent}'s sea!`);
+            break;
+        case 'emp':
+            changeMessage(powerupData.message);
+            break;
+        case 'mine':
+            changeMessage(powerupData.message);
+            break;
+        case 'shield':
+            changeMessage(powerupData.message);
+            break;
+        case 'none':
+            changeMessage('A PowerUp has been used!');
+            break;
+    }
+}
+
 // Maneja los mensajes recibidos
 function handleMessage(message) {
     switch (message.type) {
@@ -352,6 +370,9 @@ function handleMessage(message) {
             break;
         case 'playerLeft':
             handlePlayerLeft(message.playerCount, message.playerName, message.started, message.turn);
+            break;
+        case 'powerup':
+            handlePowerUp(message.powerupData, message.turn);
             break;
         case 'error':
             changeMessage(message.message);
@@ -480,13 +501,24 @@ closeConnection.addEventListener('click', () => {
 
 // POWERUPS ------------------------------------------------------------------------------------------------------------
 const sonarBt = document.getElementById('sonar');
-sonarBt.addEventListener('click', () => {});
+sonarBt.addEventListener('click', () => {
+    sendMessage(socket, {
+        type: 'powerUp',
+        gameId: obtainGameId(),
+        powerupData: {type: 'sonar', cost: 5} });
+});
 
 const aircraftAttackBt = document.getElementById('attack-aircraft');
 aircraftAttackBt.addEventListener('click', () => {});
 
 const mineBt = document.getElementById('sea-mine');
-mineBt.addEventListener('click', () => {});
+mineBt.addEventListener('click', () => {
+    // Ejemplo
+    sendMessage(socket, {
+        type: 'powerUp',
+        gameId: obtainGameId(),
+        powerupData: { type: 'mine', cost: 5, cell: 'b5'} });
+});
 
 const shieldBt = document.getElementById('defensive-shield');
 shieldBt.addEventListener('click', () => {});
@@ -498,4 +530,10 @@ const repairBt = document.getElementById('quick-repair');
 repairBt.addEventListener('click', () => {});
 
 const empBt = document.getElementById('emp-attack');
-empBt.addEventListener('click', () => {});
+empBt.addEventListener('click', () => {
+    // Ejemplo
+    sendMessage(socket, {
+        type: 'powerUp',
+        gameId: obtainGameId(),
+        powerupData: { type: 'emp', cost: 25, opponent: players[1]} });
+});

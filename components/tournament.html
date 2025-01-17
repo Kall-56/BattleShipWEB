@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>BattleShip WEB :Tournament:</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="description" content="Battleship game"/>
+        <meta name="keywords" content="battleship, video-game, html, css, javascript"/>
+        <meta name="author" content="Alex Monsalve & Alessandro Ventresca"/>
+        <meta name="robots" content="noindex,follow"/>
+        <link rel="icon" sizes="16x16 32x32 64x64" href="../boat.ico" type="image/x-icon"/>
+        <link rel="stylesheet" href="../assets/css/game-style.css" type="text/css"/>
+        <link rel="stylesheet" href="../assets/css/table-style.css" type="text/css"/>
+        <link rel="stylesheet" href="../assets/css/header-style.css" type="text/css"/>
+        <link rel="stylesheet" href="../assets/css/footer-style.css" type="text/css"/>
+    </head>
+    <body>
+        <header>
+            <h1>BattleShip WEB</h1>
+            <nav class="menu-buttons">
+                <ul>
+                    <li><a class="main-button" id="home-bt" href="../index.html">Home Menu</a></li>
+                    <li><a class="main-button" id="leaderboard-bt" href="../index.html">Leaderboard</a></li>
+                    <li><a class="main-button" id="rules-bt" href="../index.html">Rules</a></li>
+                </ul>
+            </nav>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
+            </svg>
+        </header>
+        <main>
+            <aside>
+                <div class="ship-selection" id="ship-side">
+                    <section class="player-ready">
+                        <h2>Multiplayer controls</h2>
+                        <button class="start-game server-operation" id="ready">Ready</button>
+                        <form id="user" action="#" method="POST">
+                            <p>Insert your username:</p>
+                            <div class="username">
+                                <label for="username">
+                                    <input id="username" name="username" type="text" placeholder="User1234" required />
+                                </label>
+                                <button type="button" id="submit-user" class="server-operation">Submit</button>
+                            </div>
+                        </form>
+                        <div id="options">
+                            <div id="main-options">
+                                <button id="create-tournament" class="server-operation">Create ID</button>
+                                <button id="leave-tournament" class="server-operation">Leave game!</button>
+                                <button id="close-connection" class="client-operation">Close connection</button>
+                            </div>
+                            <div class="multiplayer-game">
+                                <label for="tournament-id">
+                                    <input name="tournament-id" type="text" id="tournament-id" placeholder="ID" />
+                                </label>
+                                <button id="join-tournament" class="server-operation">Join</button>
+                            </div>
+                            <div id="messages"></div>
+                        </div>
+                    </section>
+                </div>
+            </aside>
+        </main>
+        <footer>
+            <p>No Copyright - <a href="https://www.ucab.edu.ve/">ucab.edu.ve</a></p>
+            <p>by Alex Monsalve & Alessandro Ventresca.</p>
+            <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
+            </svg>
+            <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none" style="left: 200vw;">
+                <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
+            </svg>
+        </footer>
+        <script src="../functionality/connectionTournament.js" type="module"></script>
+    </body>
+</html>

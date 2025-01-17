@@ -62,9 +62,10 @@ function generateBoard(playerNum) {
     return board;
 }
 
-let iCells = [];
-let iShips = [];
-
+function createGameBoard4Ships() {
+    let shipBoardPlace = document.getElementById('ship-side');
+    shipBoardPlace.appendChild(generateBoard(1));
+}
 
 class shipClass {
     constructor(htmlElement, name, orientation, size,) {
@@ -173,13 +174,10 @@ function validatePlacement(ship, position, orientation, shipSize) {
     return true;
 }
 
-function createGameBoard4Ships() {
-    let shipBoardPlace = document.getElementById('ship-side');
-    shipBoardPlace.appendChild(generateBoard(1));
-}
+let iCells = [];
+let iShips = [];
 
 //--------------------------------------------------------------------------------------------------------------------//
-
 let dragElement = null;
 
 function handleDragStart(evt) {
@@ -348,10 +346,6 @@ export function initializeShips() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    initializeShips();
-});
-
 export function eliminateListeners() {
     iCells.forEach(function (item) {
         item.replaceWith(item.cloneNode(true));
@@ -360,3 +354,7 @@ export function eliminateListeners() {
         item.replaceWith(item.cloneNode(true));
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializeShips();
+});

@@ -6,26 +6,20 @@ let shipsSend = false;
 let gameJoined = false;
 let actualGameId = '';
 let actualUser = '';
+let actualShips = {};
 
+let actualPowerUp = null;
 const powerUps = {
-    sonar: {
+    shield: { // Solo 1 uso
         enable: true,
-    },
-    attackAircraft: {
-        enable: true,
-    },
-    shield: {
-        enable: true,
-        turnsActive: 3,
+        turnsActive: 0, // max 3
     },
     missiles: {
-        turnsWait: 5,
+        turnsWait: 0, // max 5
     },
-    repair: {
-        enable: true,
-    },
+    repaired: [], // Solo 1 uso por barco
     emp: {
-        turnsWait: 10,
+        turnsWait: 0, // max 10
     }
 }
 
@@ -159,6 +153,7 @@ function handleGameStart(turn) {
     createGameBoards(amountPlayers);
     changeBoardSize();
 
+    document.getElementById('total-points').textContent = '0';
     document.querySelector('.user-side').appendChild(document.getElementById('messages'));
     document.getElementById('leave-space').appendChild(leaveGame);
     document.getElementById('leave-space').appendChild(closeConnection);
@@ -171,9 +166,79 @@ function handleGameStart(turn) {
     eliminateListeners();
 
     for (let i = 1; i < amountPlayers; i++) {
-        document.getElementById(`p${i + 1}-name`).textContent = players[i];
+        const opponentSpan = document.getElementById(`p${i + 1}-name`);
+        opponentSpan.textContent = players[i];
+
+        opponentSpan.addEventListener('click', () => {
+            if (actualPowerUp === 'aircraftAttack') {
+                sendMessage(socket, {
+                    type: 'powerUp',
+                    gameId: obtainGameId(),
+                    powerupData: { type: 'attackAircraft', cost: 10, opponent: players[i]} });
+                actualPowerUp = null;
+                resetClassBt();
+            } else if (actualPowerUp === 'empAttack' && powerUps.emp.turnsWait === 0) {
+                sendMessage(socket, {
+                    type: 'powerUp',
+                    gameId: obtainGameId(),
+                    powerupData: { type: 'emp', cost: 25, opponent: players[i]} });
+                actualPowerUp = null;
+                resetClassBt();
+            } else if (actualPowerUp !== null) {
+                changeMessage('Cannot use powerUp');
+            }
+        })
     }
 
+    const ships = [...document.getElementsByClassName('ship')];
+    for (let ship of ships) {
+        ship.addEventListener('click', () => {
+            if (!actualPowerUp) { return; }
+            const shipName = ship.id;
+            if (actualPowerUp === 'quickRepair' && !powerUps.repaired.includes(shipName)) {
+                sendMessage(socket, {
+                    type: 'powerUp',
+                    gameId: obtainGameId(),
+                    powerupData: { type: 'repair', cost: 10, shipName, shipCells: actualShips[shipName]} });
+                actualPowerUp = null;
+                resetClassBt();
+            } else {
+                changeMessage('Cannot use powerUp');
+            }
+        });
+    }
+
+    const playerBoard = document.getElementById('player-space');
+    playerBoard.addEventListener('click', (event) => {
+        const pos = event.target.closest('.cell');
+        if (!pos) { return; }
+
+        const idPos = pos.id.split('@')[1];
+        if (!idPos) { return; }
+        if (!actualPowerUp) { return; }
+        if (actualPowerUp === 'seaMine') {
+            if (!(pos.classList.contains('over') || pos.classList.contains('miss'))) {
+                sendMessage(socket, {
+                    type: 'powerUp',
+                    gameId: obtainGameId(),
+                    powerupData: {type: 'mine', cost: 5, cell: idPos}
+                });
+                actualPowerUp = null;
+                resetClassBt();
+            } else {
+                changeMessage('You cannot place a mine there!');
+            }
+        } else if (actualPowerUp === 'defensiveShield' && powerUps.shield.enable) {
+            sendMessage(socket, {
+                type: 'powerUp',
+                gameId: obtainGameId(),
+                powerupData: { type: 'shield', cost: 15, cell: idPos} });
+            actualPowerUp = null;
+            resetClassBt();
+        } else {
+            changeMessage('Cannot use powerUp');
+        }
+    });
     // Se le coloca el evento al tablero (padre de las celdas) y se aprovecha el bubbling
     const opponentBoards = document.querySelectorAll('.table.opponent');
     opponentBoards.forEach((board) => {
@@ -182,21 +247,34 @@ function handleGameStart(turn) {
             if (!pos) { return; }
 
             const idMove = pos.id.split('@')[1];
-            if (idMove && !(pos.classList.contains('hit') || pos.classList.contains('miss'))) {
+            if (!idMove) { return; }
+            if (actualPowerUp === null) {
+                if (!(pos.classList.contains('hit') || pos.classList.contains('miss'))) {
+                    sendMessage(socket, {
+                        type: 'move',
+                        gameId: actualGameId,
+                        move: idMove,
+                        opponentName: players[pos.id.split('@')[0][1] - 1]
+                    });
+                } else {
+                    changeMessage('You cannot attack there!');
+                }
+            } else if (actualPowerUp === 'cruiseMissile' && powerUps.missiles.turnsWait === 0) {
                 sendMessage(socket, {
-                    type: 'move',
-                    gameId: actualGameId,
-                    move: idMove,
-                    opponentName: players[pos.id.split('@')[0][1] - 1]
-                });
+                    type: 'powerUp',
+                    gameId: obtainGameId(),
+                    powerupData: { type: 'missiles', cost: 15, cell: idMove, opponent: players[pos.id.split('@')[0][1] - 1]} });
+                actualPowerUp = null;
+                resetClassBt();
             } else {
-                changeMessage('You cannot attack there!');
+                changeMessage('Cannot use powerUp');
             }
         });
     });
 }
 
-function handleMove(move, hit, opponentName, turn) {
+function handleMove(move, hit, opponentName, turn, points) {
+    document.getElementById('total-points').textContent = points;
     const oppIndex = players.indexOf(opponentName);
 
     // Clases para identificar un hit o miss
@@ -226,7 +304,6 @@ function resetGame() {
             players.splice(i, 1);
         }
     }
-    console.log(players);
 
     const elsShip = document.querySelectorAll('.ship');
     const wareHouse = document.querySelector('.ship-warehouse');
@@ -320,17 +397,82 @@ function handlePowerUp(powerupData, turn) {
         case 'sonar':
             changeMessage(`There's a ship at: ${powerupData.cell} on ${powerupData.opponent}'s sea!`);
             break;
-        case 'emp':
+        case 'aircraftAttack':
+            changeMessage(powerupData.message);
+            break;
+        case 'shield':
+            changeMessage(powerupData.message);
+            if (powerupData.placingCells) {
+                placeDefenseCells(powerupData.cells);
+            }
+            break;
+        case 'missiles':
             changeMessage(powerupData.message);
             break;
         case 'mine':
             changeMessage(powerupData.message);
             break;
-        case 'shield':
+        case 'repair':
+            repairCells(powerupData.player, powerupData.repairedCells);
+            changeMessage(powerupData.message);
+            break;
+        case 'emp':
             changeMessage(powerupData.message);
             break;
         case 'none':
             changeMessage('A PowerUp has been used!');
+            break;
+    }
+}
+
+function handlePowerupStatus() {
+    if (powerUps.shield.turnsActive > 0) {
+        powerUps.shield.turnsActive--;
+    }
+    if (powerUps.missiles.turnsWait > 0) {
+        powerUps.missiles.turnsWait--;
+    }
+    if (powerUps.emp.turnsWait > 0) {
+        powerUps.emp.turnsWait--;
+    }
+
+    if (powerUps.shield.turnsActive >= 3) {
+        shieldBt.disabled = true;
+    } else if (powerUps.shield.turnsActive === 0) {
+        raiseShields();
+    }
+    if (powerUps.missiles.turnsWait >= 5) {
+        missilesBt.disabled = true;
+    } else if (powerUps.missiles.turnsWait === 0) {
+        missilesBt.disabled = false;
+    }
+    if (powerUps.emp.turnsWait >= 10) {
+        empBt.disabled = true;
+    } else if (powerUps.emp.turnsWait === 0) {
+        empBt.disabled = false;
+    }
+}
+
+function handlePowerupSuccess(message) {
+    switch (message.powerup) {
+        case 'shield':
+            if (powerUps.shield.turnsActive === 0) {
+                powerUps.shield.turnsActive = 4;
+                powerUps.shield.enable = false;
+            }
+            break;
+        case 'missiles':
+            if (powerUps.missiles.turnsWait === 0) {
+                powerUps.missiles.turnsWait = 6;
+            }
+            break;
+        case 'emp':
+            if (powerUps.emp.turnsWait === 0) {
+                powerUps.emp.turnsWait = 11;
+            }
+            break;
+        case 'repair':
+            powerUps.repaired.push(message.shipName);
             break;
     }
 }
@@ -357,7 +499,7 @@ function handleMessage(message) {
             handleGameStart(message.turn);
             break;
         case 'move':
-            handleMove(message.move, message.hit, message.opponentName, message.turn);
+            handleMove(message.move, message.hit, message.opponentName, message.turn, message.points);
             break;
         case 'gameFinished':
             handleGameFinished(message.winner);
@@ -373,6 +515,12 @@ function handleMessage(message) {
             break;
         case 'powerup':
             handlePowerUp(message.powerupData, message.turn);
+            break;
+        case 'powerupTurn':
+            handlePowerupStatus();
+            break;
+        case 'powerupSuccess':
+            handlePowerupSuccess(message);
             break;
         case 'error':
             changeMessage(message.message);
@@ -410,6 +558,27 @@ socket.addEventListener('close', () => {
 });
 
 // DOM -----------------------------------------------------------------------------------------------------------------
+function raiseShields() {
+    sendMessage(socket, { type: 'raiseShields' });
+    const defenseCells = [...document.getElementsByClassName('defense')];
+    defenseCells.forEach((cell) => cell.classList.remove('defense'));
+}
+
+function placeDefenseCells(cells) {
+    for (let cell of cells) {
+        document.getElementById(`p1@${cell}`).classList.add('defense');
+    }
+}
+
+function repairCells(playerName, repairedCells) {
+    const pIndex = players.indexOf(playerName);
+
+    for (let cell of repairedCells) {
+        document.getElementById(`p${pIndex + 1}@${cell}`).setAttribute('class', 'cell');
+        document.getElementById(`p${pIndex + 1}@${cell}`).classList.add('repaired');
+    }
+}
+
 function obtainShips() {
     const ships = {};
     const shipsNames = ['carrier', 'destroyer', 'cruiser', 'submarine', 'battleship'];
@@ -470,6 +639,7 @@ joinGame.addEventListener('click', () => {
 const sendFleet = document.getElementById('send-ships');
 sendFleet.addEventListener('click', () => {
     const ships = obtainShips();
+    actualShips = ships;
 
     if (!ships) {
         alert('Place all the ships before sending them!');
@@ -500,6 +670,25 @@ closeConnection.addEventListener('click', () => {
 });
 
 // POWERUPS ------------------------------------------------------------------------------------------------------------
+function resetClassBt() {
+    for (let button of powerupButtons) {
+        button.classList.remove('active');
+    }
+}
+
+function powerupClickListener(button, powerup, message) {
+    resetClassBt();
+    if (actualPowerUp !== powerup) {
+        actualPowerUp = powerup;
+        changeMessage(message);
+        button.classList.add('active');
+    } else {
+        actualPowerUp = null;
+        changeMessage('PowerUp deselected');
+        button.classList.remove('active');
+    }
+}
+
 const sonarBt = document.getElementById('sonar');
 sonarBt.addEventListener('click', () => {
     sendMessage(socket, {
@@ -509,31 +698,45 @@ sonarBt.addEventListener('click', () => {
 });
 
 const aircraftAttackBt = document.getElementById('attack-aircraft');
-aircraftAttackBt.addEventListener('click', () => {});
+aircraftAttackBt.addEventListener('click', () => powerupClickListener(
+    aircraftAttackBt,
+    'aircraftAttack',
+    'Attack Aircraft selected. Click an opponent name to attack it'
+));
 
 const mineBt = document.getElementById('sea-mine');
-mineBt.addEventListener('click', () => {
-    // Ejemplo
-    sendMessage(socket, {
-        type: 'powerUp',
-        gameId: obtainGameId(),
-        powerupData: { type: 'mine', cost: 5, cell: 'b5'} });
-});
+mineBt.addEventListener('click', () => powerupClickListener(
+    mineBt,
+    'seaMine',
+    'Sea Mine selected. Click on a cell to place a mine'
+));
 
 const shieldBt = document.getElementById('defensive-shield');
-shieldBt.addEventListener('click', () => {});
+shieldBt.addEventListener('click', () => powerupClickListener(
+    shieldBt,
+    'defensiveShield',
+    'Defensive Shield selected. Click on a cell to activate it'
+));
 
 const missilesBt = document.getElementById('cruise-missile');
-missilesBt.addEventListener('click', () => {});
+missilesBt.addEventListener('click', () => powerupClickListener(
+    missilesBt,
+    'cruiseMissile',
+    'Cruise Missile selected. Click on a opponents cell to attack'
+));
 
 const repairBt = document.getElementById('quick-repair');
-repairBt.addEventListener('click', () => {});
+repairBt.addEventListener('click', () => powerupClickListener(
+    repairBt,
+    'quickRepair',
+    'Quick Repair selected. Click on a ship to repair it'
+));
 
 const empBt = document.getElementById('emp-attack');
-empBt.addEventListener('click', () => {
-    // Ejemplo
-    sendMessage(socket, {
-        type: 'powerUp',
-        gameId: obtainGameId(),
-        powerupData: { type: 'emp', cost: 25, opponent: players[1]} });
-});
+empBt.addEventListener('click', () => powerupClickListener(
+    empBt,
+    'empAttack',
+    'EMP selected. Click on an opponent name to attack'
+));
+
+const powerupButtons = [aircraftAttackBt, mineBt, shieldBt, missilesBt, repairBt, empBt];

@@ -42,8 +42,17 @@
     background-color: rgba(76, 17, 255, 0.5);
 }
 
+.table .cell[id].hit.repaired,
 .table .cell[id].hit {
     background-color: rgba(255, 13, 105, 0.5);
+}
+
+.table .cell[id].defense {
+    background-color: rgba(13, 255, 110, 0.5);
+}
+
+.table .cell[id].repaired {
+    background-color: rgba(255, 243, 13, 0.5);
 }
 
 .cell[id] {
@@ -64,6 +73,7 @@
     background-color: rgba(30, 0, 79, 0.25);
 }
 
+.table .cell[id].repaired:hover,
 .cell[id]:hover {
     background-color: rgba(1, 24, 203, 0.5); /*rgba(245, 245, 245, 0.5);*/
 }

@@ -25,6 +25,26 @@ const powerUps = {
 
 let players = [];
 let amountPlayers = 1;
+let timerInterval;
+
+function updateTimer(seconds) {
+    const timerElement = document.getElementById('turn-time');
+    timerElement.textContent = seconds;
+}
+
+function startClientTimer() {
+    let timeRemaining = 60;
+    updateTimer(timeRemaining);
+
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimer(timeRemaining);
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+        }
+    }, 1000);
+}
 
 function sendMessage(socket, message) {
     const messageString = JSON.stringify(message);
@@ -161,9 +181,15 @@ function handleGameStart(turn) {
     document.getElementById('ship-side').style.display = 'none';
     document.querySelector('.user-side').style.display = 'flex';
     document.querySelector('.game-side').style.display = 'flex';
-    document.getElementById('turn-ui').style.display = 'block';
+    document.getElementById('turn-ui').style.display = 'flex';
 
     eliminateListeners();
+
+    powerUps.shield.enable = true;
+    powerUps.shield.turnsActive = 0;
+    powerUps.missiles.turnsWait = 0;
+    powerUps.emp.turnsWait = 0;
+    powerUps.repaired = [];
 
     for (let i = 1; i < amountPlayers; i++) {
         const opponentSpan = document.getElementById(`p${i + 1}-name`);
@@ -496,9 +522,11 @@ function handleMessage(message) {
             handleWait();
             break;
         case 'gameStarted':
+            startClientTimer();
             handleGameStart(message.turn);
             break;
         case 'move':
+            startClientTimer();
             handleMove(message.move, message.hit, message.opponentName, message.turn, message.points);
             break;
         case 'gameFinished':
@@ -514,6 +542,7 @@ function handleMessage(message) {
             handlePlayerLeft(message.playerCount, message.playerName, message.started, message.turn);
             break;
         case 'powerup':
+            startClientTimer();
             handlePowerUp(message.powerupData, message.turn);
             break;
         case 'powerupTurn':
@@ -521,6 +550,14 @@ function handleMessage(message) {
             break;
         case 'powerupSuccess':
             handlePowerupSuccess(message);
+            break;
+        case 'timeout':
+            startClientTimer();
+            changeMessage(message.message);
+            if (document.getElementById('turn-user').innerText === actualUser) {
+                handlePowerupStatus();
+            }
+            document.getElementById('turn-user').innerText = message.turn;
             break;
         case 'error':
             changeMessage(message.message);

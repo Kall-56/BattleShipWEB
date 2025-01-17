@@ -190,6 +190,7 @@ function handleGameStart(turn) {
     powerUps.missiles.turnsWait = 0;
     powerUps.emp.turnsWait = 0;
     powerUps.repaired = [];
+    handlePowerupStatus();
 
     for (let i = 1; i < amountPlayers; i++) {
         const opponentSpan = document.getElementById(`p${i + 1}-name`);
@@ -464,8 +465,10 @@ function handlePowerupStatus() {
 
     if (powerUps.shield.turnsActive >= 3) {
         shieldBt.disabled = true;
-    } else if (powerUps.shield.turnsActive === 0) {
+    } else if (powerUps.shield.turnsActive === 0 && !powerUps.shield.enable) {
         raiseShields();
+    } else if (powerUps.shield.enable) {
+        shieldBt.disabled = false;
     }
     if (powerUps.missiles.turnsWait >= 5) {
         missilesBt.disabled = true;
@@ -528,6 +531,10 @@ function handleMessage(message) {
         case 'move':
             startClientTimer();
             handleMove(message.move, message.hit, message.opponentName, message.turn, message.points);
+            break;
+        case 'sunk':
+            changeMessage(message.message);
+            document.getElementById('total-points').textContent = message.points;
             break;
         case 'gameFinished':
             handleGameFinished(message.winner);

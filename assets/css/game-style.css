@@ -97,9 +97,12 @@ aside {
 #turn-ui {
     display: none;
     position: absolute;
-    left: 42.8%;
+    left: 37%;
     top: 11.3%;
     z-index: 1;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     width: 25rem;
     color: #3182e4;
 }
@@ -111,8 +114,11 @@ aside {
 }
 
 #turn-ui p {
-    margin: 0 0 0 2%;
-    display: inline;
+    margin: 0.3rem 0 0 0.5rem;
+}
+
+#turn-ui h3 {
+    margin: 0 0 0 1.5rem;
 }
 
 #ship-side .ship-warehouse {

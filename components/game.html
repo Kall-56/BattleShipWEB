@@ -20,7 +20,6 @@
             <nav class="menu-buttons">
                 <ul>
                     <li><a class="main-button" id="home-bt" href="../index.html">Home Menu</a></li>
-                    <li><a class="main-button" id="tournament-bt" href="#">Tournament</a></li>
                     <li><a class="main-button" id="leaderboard-bt" href="../index.html">Leaderboard</a></li>
                     <li><a class="main-button" id="rules-bt" href="../index.html">Rules</a></li>
                     <li id="leave-space"></li>
@@ -60,6 +59,7 @@
                                     <button id="send-ships" class="server-operation">Send your fleet</button>
                                     <button id="leave-game" class="server-operation">Leave game!</button>
                                     <button id="close-connection" class="client-operation">Close connection</button>
+                                    <button id="tournament-mode" class="client-operation">Enable Tournament</button>
                                 </div>
                                 <div class="multiplayer-game">
                                     <label for="game-id">
@@ -70,6 +70,14 @@
                                 <div id="messages"></div>
                             </div>
                         </section>
+                        <div id="tournament-options" hidden>
+                            <button id="create-lobby">Create Tournament Lobby</button>
+                            <label for="lobby-id">
+                                <input name="lobby-id" type="text" id="lobby-id" placeholder="Lobby ID" />
+                            </label>
+                            <button id="join-lobby">Join Tournament Lobby</button>
+                            <button id="ready-lobby">Ready for tournament</button>
+                        </div>
                     </div>
                 </div>
             </aside>

@@ -2,22 +2,17 @@ import { createGameBoards } from "./game.js";
 import { eliminateListeners } from "./game.js";
 import { initializeShips } from "./game.js";
 
-// Constantes que definen el URL del servidor WebSocket
-const WEBSOCKET_SCHEME = 'ws';
-const WEBSOCKET_SERVER = 'localhost';
-const WEBSOCKET_PORT = 8080;
-const WEBSOCKET_URL = `${WEBSOCKET_SCHEME}://${WEBSOCKET_SERVER}:${WEBSOCKET_PORT}`;
-
-function sendMessage(socket, message) {
-    const messageString = JSON.stringify(message);
-    socket.send(messageString);
-}
-
 let shipsSend = false;
 let gameJoined = false;
+
+let inTournament = false;
+let formatOfLobby = '';
+let actualLobbyId = '';
+
 let actualGameId = '';
 let actualUser = '';
 let actualShips = {};
+
 let actualPowerUp = null;
 const powerUps = {
     shield: { // Solo 1 uso
@@ -35,58 +30,44 @@ const powerUps = {
 
 let players = [];
 let amountPlayers = 1;
+let timerInterval;
 
-// Maneja los mensajes recibidos
-function handleMessage(message) {
-    switch (message.type) {
-        case 'registered':
-            handleUserRegistration();
-            break;
-        case 'fleetEstablished':
-            handleFleetEstablished();
-            break;
-        case 'gameCreated':
-            handleGameCreation(message.gameId);
-            break;
-        case 'playerJoined':
-            handleJoinGame(message.gameId, message.playerNames, message.playerCount);
-            break;
-        case 'wait':
-            handleWait();
-            break;
-        case 'gameStarted':
-            handleGameStart(message.turn);
-            break;
-        case 'move':
-            handleMove(message.move, message.hit, message.opponentName, message.turn, message.points);
-            break;
-        case 'gameFinished':
-            handleGameFinished(message.winner);
-            break;
-        case 'gameLost':
-            handleGameLost(message.message);
-            break;
-        case 'leftGame':
-            handleLeftGame(message.started);
-            break;
-        case 'playerLeft':
-            handlePlayerLeft(message.playerCount, message.playerName, message.started, message.turn);
-            break;
-        case 'powerup':
-            handlePowerUp(message.powerupData, message.turn);
-            break;
-        case 'powerupTurn':
-            handlePowerupStatus();
-            break;
-        case 'powerupSuccess':
-            handlePowerupSuccess(message);
-            break;
-        case 'error':
-            changeMessage(message.message);
-            break;
-        default:
+function updateTimer(seconds) {
+    const timerElement = document.getElementById('turn-time');
+    timerElement.textContent = seconds;
+}
 
-    }
+function startClientTimer() {
+    let timeRemaining = 60;
+    updateTimer(timeRemaining);
+
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimer(timeRemaining);
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+        }
+    }, 1000);
+}
+
+function sendMessage(socket, message) {
+    const messageString = JSON.stringify(message);
+    socket.send(messageString);
+}
+
+function enableReadyBt() {
+    ready.disabled = !(shipsSend && gameJoined);
+}
+
+function changeMessage(message) {
+    document.getElementById('messages').innerText = message;
+}
+
+function disableGameBts(disable) {
+    createGame.disabled = disable;
+    joinGame.disabled = disable;
+    document.getElementById('game-id').disabled = disable;
 }
 
 function handleUserRegistration() {
@@ -119,6 +100,12 @@ function handleGameCreation(gameId) {
     changeMessage(`Game created. ID: ${gameId}`);
 }
 
+function handleLobbyCreation(lobbyId) {
+    actualLobbyId = lobbyId;
+    document.getElementById('lobby-id').value = lobbyId;
+    changeMessage(`Lobby created. ID: ${lobbyId}`);
+}
+
 function handleJoinGame(gameId, playerNames, playerCount) {
     gameJoined = true;
     actualGameId = gameId;
@@ -135,9 +122,65 @@ function handleJoinGame(gameId, playerNames, playerCount) {
     changeMessage(`${playerNames[playerCount-1]} joined the game lobby`);
 }
 
+function handleJoinLobby(lobbyId) {
+    actualLobbyId = lobbyId;
+    inTournament = true;
+
+    changeMessage(`user joined the tournament lobby`);
+}
+
 function handleWait() {
     document.getElementById('ready').disabled = true;
     changeMessage('Waiting for players to be ready...');
+}
+
+function changeBoardSize() {
+    const elements = document.querySelectorAll('.opponent');
+    if (elements.length === 1) {
+        elements.forEach(el => {
+            el.style.width = '60%';
+            el.style.height = '85%';
+        });
+        document.getElementById('opponents-space').style.height = '100%';
+    } else if (elements.length === 2) {
+        elements.forEach(el => {
+            el.style.width = '90%';
+            el.style.height = '80%';
+        });
+        document.getElementById('opponents-space').style.height = '100%';
+    } else {
+        elements.forEach(el => {
+            el.style.width = '60%';
+            el.style.height = '85%';
+        });
+        elements[elements.length-1].style.width = '30%';
+        elements[elements.length-1].style.height = '80%';
+        document.getElementById('opponents-space').style.height = '50%';
+    }
+}
+
+function boardSizeOnPlayerLeft() {
+    const elements = document.querySelectorAll('.opponent');
+    const elementsParent = document.querySelectorAll('.opponent-table');
+    if (document.querySelector('.forth-player-side')) {
+        elementsParent.forEach(el => {
+            document.getElementById('opponents-space').appendChild(el);
+        });
+        document.querySelector('.forth-player-side').remove();
+    }
+    if (elements.length === 1) {
+        elements.forEach(el => {
+            el.style.width = '60%';
+            el.style.height = '85%';
+        });
+        document.getElementById('opponents-space').style.height = '100%';
+    } else if (elements.length === 2) {
+        elements.forEach(el => {
+            el.style.width = '90%';
+            el.style.height = '80%';
+        });
+        document.getElementById('opponents-space').style.height = '100%';
+    }
 }
 
 function handleGameStart(turn) {
@@ -156,9 +199,16 @@ function handleGameStart(turn) {
     document.getElementById('ship-side').style.display = 'none';
     document.querySelector('.user-side').style.display = 'flex';
     document.querySelector('.game-side').style.display = 'flex';
-    document.getElementById('turn-ui').style.display = 'block';
+    document.getElementById('turn-ui').style.display = 'flex';
 
     eliminateListeners();
+
+    powerUps.shield.enable = true;
+    powerUps.shield.turnsActive = 0;
+    powerUps.missiles.turnsWait = 0;
+    powerUps.emp.turnsWait = 0;
+    powerUps.repaired = [];
+    handlePowerupStatus();
 
     for (let i = 1; i < amountPlayers; i++) {
         const opponentSpan = document.getElementById(`p${i + 1}-name`);
@@ -293,6 +343,56 @@ function handleGameFinished(winner) {
     disableGameBts(true);
 }
 
+function resetGame() {
+    for (let i = 0; i < players.length; i++) {
+        if (players[i] === -1) {
+            players.splice(i, 1);
+        }
+    }
+
+    const elsShip = document.querySelectorAll('.ship');
+    const wareHouse = document.querySelector('.ship-warehouse');
+    elsShip.forEach(function (item) {
+        if (item.tagName !== "DIV") {
+            wareHouse.appendChild(item);
+            item.style.position = 'relative';
+            item.style.left = 'auto';
+            item.style.bottom = 'auto';
+            item.style.top = 'auto';
+        } else {
+            item.remove();
+        }
+    });
+    const opponents = [...document.getElementById('opponents-space').children];
+    opponents.forEach((item) => { item.remove(); });
+
+    const playerCells = [...document.getElementById('player-space').children];
+    playerCells.forEach((item) => { item.remove(); });
+
+    document.getElementById('board-p1').remove();
+    if (document.querySelector('.forth-player-side')) {
+        document.querySelector('.forth-player-side').remove();
+    }
+    document.getElementById('opponents-space').style.height = 'auto';
+
+    initializeShips();
+
+    document.getElementById('carrier').style.maxWidth = '15rem';
+    document.getElementById('battleship').style.maxWidth = '12rem';
+    document.getElementById('cruiser').style.maxWidth = '9rem';
+    document.getElementById('submarine').style.maxWidth = '9rem';
+    document.getElementById('destroyer').style.maxWidth = '6rem';
+
+    document.getElementById('main-options').appendChild(leaveGame);
+    document.getElementById('main-options').appendChild(closeConnection);
+    document.getElementById('options').appendChild(document.getElementById('messages'));
+
+    document.getElementById('ship-side').style.display = 'flex';
+    document.querySelector('.user-side').style.display = 'none';
+    document.querySelector('.game-side').style.display = 'none';
+    document.getElementById('turn-ui').style.display = 'none';
+}
+
 function handleGameLost(message) {
     changeMessage(message);
 }
@@ -383,8 +483,10 @@ function handlePowerupStatus() {
 
     if (powerUps.shield.turnsActive >= 3) {
         shieldBt.disabled = true;
-    } else if (powerUps.shield.turnsActive === 0) {
+    } else if (powerUps.shield.turnsActive === 0 && !powerUps.shield.enable) {
         raiseShields();
+    } else if (powerUps.shield.enable) {
+        shieldBt.disabled = false;
     }
     if (powerUps.missiles.turnsWait >= 5) {
         missilesBt.disabled = true;
@@ -422,55 +524,85 @@ function handlePowerupSuccess(message) {
     }
 }
 
-function resetGame() {
-    for (let i = 0; i < players.length; i++) {
-        if (players[i] === -1) {
-            players.splice(i, 1);
-        }
+// Maneja los mensajes recibidos
+function handleMessage(message) {
+    switch (message.type) {
+        case 'registered':
+            handleUserRegistration();
+            break;
+        case 'fleetEstablished':
+            handleFleetEstablished();
+            break;
+        case 'gameCreated':
+            handleGameCreation(message.gameId);
+            break;
+        case 'tournamentCreated':
+            handleLobbyCreation(message.tournamentId);
+            break;
+        case 'playerJoined':
+            handleJoinGame(message.gameId, message.playerNames, message.playerCount);
+            break;
+        case 'playerJoinedTournament':
+            handleJoinLobby(message.tournamentId);
+            break;
+        case 'wait':
+            handleWait();
+            break;
+        case 'gameStarted':
+            startClientTimer();
+            handleGameStart(message.turn);
+            break;
+        case 'move':
+            startClientTimer();
+            handleMove(message.move, message.hit, message.opponentName, message.turn, message.points);
+            break;
+        case 'sunk':
+            changeMessage(message.message);
+            document.getElementById('total-points').textContent = message.points;
+            break;
+        case 'gameFinished':
+            handleGameFinished(message.winner);
+            break;
+        case 'gameLost':
+            handleGameLost(message.message);
+            break;
+        case 'leftGame':
+            handleLeftGame(message.started);
+            break;
+        case 'playerLeft':
+            handlePlayerLeft(message.playerCount, message.playerName, message.started, message.turn);
+            break;
+        case 'powerup':
+            startClientTimer();
+            handlePowerUp(message.powerupData, message.turn);
+            break;
+        case 'powerupTurn':
+            handlePowerupStatus();
+            break;
+        case 'powerupSuccess':
+            handlePowerupSuccess(message);
+            break;
+        case 'timeout':
+            startClientTimer();
+            changeMessage(message.message);
+            if (document.getElementById('turn-user').innerText === actualUser) {
+                handlePowerupStatus();
+            }
+            document.getElementById('turn-user').innerText = message.turn;
+            break;
+        case 'error':
+            changeMessage(message.message);
+            break;
+        default:
+
     }
-
-    const elsShip = document.querySelectorAll('.ship');
-    const wareHouse = document.querySelector('.ship-warehouse');
-    elsShip.forEach(function (item) {
-        if (item.tagName !== "DIV") {
-            wareHouse.appendChild(item);
-            item.style.position = 'relative';
-            item.style.left = 'auto';
-            item.style.bottom = 'auto';
-            item.style.top = 'auto';
-        } else {
-            item.remove();
-        }
-    });
-    const opponents = [...document.getElementById('opponents-space').children];
-    opponents.forEach((item) => { item.remove(); });
-
-    const playerCells = [...document.getElementById('player-space').children];
-    playerCells.forEach((item) => { item.remove(); });
-
-    document.getElementById('board-p1').remove();
-    if (document.querySelector('.forth-player-side')) {
-        document.querySelector('.forth-player-side').remove();
-    }
-    document.getElementById('opponents-space').style.height = 'auto';
-
-    initializeShips();
-
-    document.getElementById('carrier').style.maxWidth = '15rem';
-    document.getElementById('battleship').style.maxWidth = '12rem';
-    document.getElementById('cruiser').style.maxWidth = '9rem';
-    document.getElementById('submarine').style.maxWidth = '9rem';
-    document.getElementById('destroyer').style.maxWidth = '6rem';
-
-    document.getElementById('main-options').appendChild(leaveGame);
-    document.getElementById('main-options').appendChild(closeConnection);
-    document.getElementById('options').appendChild(document.getElementById('messages'));
-
-    document.getElementById('ship-side').style.display = 'flex';
-    document.querySelector('.user-side').style.display = 'none';
-    document.querySelector('.game-side').style.display = 'none';
-    document.getElementById('turn-ui').style.display = 'none';
 }
+
+// Constantes que definen el URL del servidor WebSocket
+const WEBSOCKET_SCHEME = 'ws';
+const WEBSOCKET_SERVER = 'localhost';
+const WEBSOCKET_PORT = 8080;
+const WEBSOCKET_URL = `${WEBSOCKET_SCHEME}://${WEBSOCKET_SERVER}:${WEBSOCKET_PORT}`;
 
 const socket = new WebSocket(WEBSOCKET_URL);
 socket.addEventListener('open', () => {
@@ -494,145 +626,6 @@ socket.addEventListener('close', () => {
 });
 
 // DOM -----------------------------------------------------------------------------------------------------------------
-function changeMessage(message) {
-    document.getElementById('messages').innerText = message;
-}
-
-function obtainGameId() {
-    return document.getElementById('game-id').value;
-}
-
-function changeBoardSize() {
-    const elements = document.querySelectorAll('.opponent');
-    if (elements.length === 1) {
-        elements.forEach(el => {
-            el.style.width = '60%';
-            el.style.height = '85%';
-        });
-        document.getElementById('opponents-space').style.height = '100%';
-    } else if (elements.length === 2) {
-        elements.forEach(el => {
-            el.style.width = '90%';
-            el.style.height = '80%';
-        });
-        document.getElementById('opponents-space').style.height = '100%';
-    } else {
-        elements.forEach(el => {
-            el.style.width = '60%';
-            el.style.height = '85%';
-        });
-        elements[elements.length-1].style.width = '30%';
-        elements[elements.length-1].style.height = '80%';
-        document.getElementById('opponents-space').style.height = '50%';
-    }
-}
-
-function boardSizeOnPlayerLeft() {
-    const elements = document.querySelectorAll('.opponent');
-    const elementsParent = document.querySelectorAll('.opponent-table');
-    if (document.querySelector('.forth-player-side')) {
-        elementsParent.forEach(el => {
-            document.getElementById('opponents-space').appendChild(el);
-        });
-        document.querySelector('.forth-player-side').remove();
-    }
-    if (elements.length === 1) {
-        elements.forEach(el => {
-            el.style.width = '60%';
-            el.style.height = '85%';
-        });
-        document.getElementById('opponents-space').style.height = '100%';
-    } else if (elements.length === 2) {
-        elements.forEach(el => {
-            el.style.width = '90%';
-            el.style.height = '80%';
-        });
-        document.getElementById('opponents-space').style.height = '100%';
-    }
-}
-
-function enableReadyBt() {
-    ready.disabled = !(shipsSend && gameJoined);
-}
-
-function disableGameBts(disable) {
-    createGame.disabled = disable;
-    joinGame.disabled = disable;
-    document.getElementById('game-id').disabled = disable;
-}
-
-function disableButtons(disable) {
-    const buttons = document.getElementsByClassName('server-operation');
-    [...buttons].forEach((button) => {
-        button.disabled = disable;
-    });
-
-    document.getElementById('username').disabled = disable;
-    document.getElementById('game-id').disabled = disable;
-}
-
-disableButtons(true);
-
-const ready = document.getElementById('ready');
-ready.addEventListener('click', () => {
-    sendMessage(socket, { type: 'start', gameId: obtainGameId() });
-});
-
-const submitUsername = document.getElementById('submit-user');
-submitUsername.addEventListener('click', () => {
-    const userName = document.getElementById('username').value;
-    if (userName !== '') {
-        sendMessage(socket, { type: 'register', userName });
-    } else {
-        alert('Introduzca un nombre de usuario');
-    }
-});
-
-const sendFleet = document.getElementById('send-ships');
-sendFleet.addEventListener('click', () => {
-    const ships = obtainShips();
-    actualShips = ships;
-
-    if (!ships) {
-        alert('Place all the ships before sending them!');
-    }
-    else {
-        sendMessage(socket, { type: 'ships', ships });
-    }
-});
-
-const createGame = document.getElementById('create-game');
-createGame.addEventListener('click', () => {
-    sendMessage(socket, { type: 'create' });
-});
-
-const joinGame = document.getElementById('join-game');
-joinGame.addEventListener('click', () => {
-    sendMessage(socket, { type: 'join', gameId: obtainGameId() });
-});
-
-const leaveGame = document.getElementById('leave-game');
-leaveGame.addEventListener('click', () => {
-    sendMessage(socket, { type: 'leave', gameId: obtainGameId() });
-});
-
-const closeConnection = document.getElementById('close-connection');
-closeConnection.addEventListener('click', () => {
-    const response = confirm('Are you sure you do not want to continue playing?\n' +
-        'To play again just select "multiplayer" on the home menu');
-
-    if (response) {
-        socket.close();
-    }
-});
-
-// POWERUPS ------------------------------------------------------------------------------------------------------------
-function resetClassBt() {
-    for (let button of powerupButtons) {
-        button.classList.remove('active');
-    }
-}
-
 function raiseShields() {
     sendMessage(socket, { type: 'raiseShields' });
     const defenseCells = [...document.getElementsByClassName('defense')];
@@ -673,7 +666,108 @@ function obtainShips() {
         ships[shipName] = positions;
     });
     return ships;
-} //??
+}
+
+function disableButtons(disable) {
+    const buttons = document.getElementsByClassName('server-operation');
+    [...buttons].forEach((button) => {
+        button.disabled = disable;
+    });
+
+    document.getElementById('username').disabled = disable;
+    document.getElementById('game-id').disabled = disable;
+}
+
+function obtainGameId() {
+    return document.getElementById('game-id').value;
+}
+
+disableButtons(true);
+
+const submitUsername = document.getElementById('submit-user');
+submitUsername.addEventListener('click', () => {
+    const userName = document.getElementById('username').value;
+    if (userName !== '') {
+        sendMessage(socket, { type: 'register', userName });
+    } else {
+        alert('Introduzca un nombre de usuario');
+    }
+});
+
+const createGame = document.getElementById('create-game');
+createGame.addEventListener('click', () => {
+    sendMessage(socket, { type: 'create' });
+});
+
+const joinGame = document.getElementById('join-game');
+joinGame.addEventListener('click', () => {
+    sendMessage(socket, { type: 'join', gameId: obtainGameId() });
+});
+
+const sendFleet = document.getElementById('send-ships');
+sendFleet.addEventListener('click', () => {
+    const ships = obtainShips();
+    actualShips = ships;
+
+    if (!ships) {
+        alert('Place all the ships before sending them!');
+    }
+    else {
+        sendMessage(socket, { type: 'ships', ships });
+    }
+});
+
+const ready = document.getElementById('ready');
+ready.addEventListener('click', () => {
+    sendMessage(socket, { type: 'start', gameId: obtainGameId() });
+});
+
+const leaveGame = document.getElementById('leave-game');
+leaveGame.addEventListener('click', () => {
+    sendMessage(socket, { type: 'leave', gameId: obtainGameId() });
+});
+
+const closeConnection = document.getElementById('close-connection');
+closeConnection.addEventListener('click', () => {
+    const response = confirm('Are you sure you do not want to continue playing?\n' +
+        'To play again just select "multiplayer" on the home menu');
+
+    if (response) {
+        socket.close();
+    }
+});
+
+const enableTournament = document.getElementById('tournament-mode');
+enableTournament.addEventListener('click', () => {
+    document.getElementById('tournament-options').style.display = 'block';
+    inTournament = true;
+    createGame.disabled = true;
+    joinGame.disabled = true;
+    leaveGame.disabled = true;
+    document.getElementById('game-id').disabled = true;
+});
+
+const createLobby = document.getElementById('create-lobby');
+createLobby.addEventListener('click', () => {
+    sendMessage(socket, { type: 'createTournament', format: 2});
+});
+
+const joinLobby = document.getElementById('join-lobby');
+joinLobby.addEventListener('click', () => {
+    sendMessage(socket, { type: 'joinTournament', tournamentId: document.getElementById('lobby-id').value});
+});
+
+const lobbyReady = document.getElementById('ready-lobby');
+lobbyReady.addEventListener('click', () => {
+    sendMessage(socket, { type: 'startTournament', tournamentId: actualLobbyId});
+});
+
+// POWERUPS ------------------------------------------------------------------------------------------------------------
+function resetClassBt() {
+    for (let button of powerupButtons) {
+        button.classList.remove('active');
+    }
+}
 
 function powerupClickListener(button, powerup, message) {
     resetClassBt();

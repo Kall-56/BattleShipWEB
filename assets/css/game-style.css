@@ -326,7 +326,7 @@ button.client-operation {
     justify-content: space-between;
 }
 
-.player-ready input#game-id,
+.player-ready input#tournament-id,
 .player-ready input#move {
     width: 300px;
     height: 40px;

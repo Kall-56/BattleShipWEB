@@ -73,7 +73,7 @@
     background-color: rgba(30, 0, 79, 0.25);
 }
 
-.table .cell[id].repaired:hover,
+.table.opponent .cell[id].repaired:hover,
 .cell[id]:hover {
     background-color: rgba(1, 24, 203, 0.5); /*rgba(245, 245, 245, 0.5);*/
 }

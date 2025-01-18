@@ -64,6 +64,12 @@ function changeMessage(message) {
     document.getElementById('messages').innerText = message;
 }
 
+function disableLobbyBts(disable) {
+    createLobby.disabled = disable;
+    joinLobby.disabled = disable;
+    document.getElementById('lobby-id').disabled = disable;
+}
+
 function disableGameBts(disable) {
     createGame.disabled = disable;
     joinGame.disabled = disable;
@@ -101,8 +107,11 @@ function handleGameCreation(gameId) {
 }
 
 function handleLobbyCreation(lobbyId) {
+    inTournament = true;
     actualLobbyId = lobbyId;
+    enableTournament.disabled = true;
     document.getElementById('lobby-id').value = lobbyId;
+    disableLobbyBts(true);
     changeMessage(`Lobby created. ID: ${lobbyId}`);
 }
 
@@ -122,11 +131,13 @@ function handleJoinGame(gameId, playerNames, playerCount) {
     changeMessage(`${playerNames[playerCount-1]} joined the game lobby`);
 }
 
-function handleJoinLobby(lobbyId) {
+function handleJoinLobby(lobbyId, playerName) {
     actualLobbyId = lobbyId;
     inTournament = true;
+    enableTournament.disabled = true;
+    disableLobbyBts(true);
 
-    changeMessage(`user joined the tournament lobby`);
+    changeMessage(`${playerName} joined the tournament lobby`);
 }
 
 function handleWait() {
@@ -184,6 +195,7 @@ function boardSizeOnPlayerLeft() {
 }
 
 function handleGameStart(turn) {
+    lobbyReady.disabled = true;
     ready.disabled = true;
     document.getElementById('turn-user').innerText = turn;
     changeMessage('Game started!');
@@ -218,14 +230,14 @@ function handleGameStart(turn) {
             if (actualPowerUp === 'aircraftAttack') {
                 sendMessage(socket, {
                     type: 'powerUp',
-                    gameId: obtainGameId(),
+                    gameId: actualGameId,
                     powerupData: { type: 'attackAircraft', cost: 10, opponent: players[i]} });
                 actualPowerUp = null;
                 resetClassBt();
             } else if (actualPowerUp === 'empAttack' && powerUps.emp.turnsWait === 0) {
                 sendMessage(socket, {
                     type: 'powerUp',
-                    gameId: obtainGameId(),
+                    gameId: actualGameId,
                     powerupData: { type: 'emp', cost: 25, opponent: players[i]} });
                 actualPowerUp = null;
                 resetClassBt();
@@ -243,7 +255,7 @@ function handleGameStart(turn) {
             if (actualPowerUp === 'quickRepair' && !powerUps.repaired.includes(shipName)) {
                 sendMessage(socket, {
                     type: 'powerUp',
-                    gameId: obtainGameId(),
+                    gameId: actualGameId,
                     powerupData: { type: 'repair', cost: 10, shipName, shipCells: actualShips[shipName]} });
                 actualPowerUp = null;
                 resetClassBt();
@@ -265,7 +277,7 @@ function handleGameStart(turn) {
             if (!(pos.classList.contains('over') || pos.classList.contains('miss'))) {
                 sendMessage(socket, {
                     type: 'powerUp',
-                    gameId: obtainGameId(),
+                    gameId: actualGameId,
                     powerupData: {type: 'mine', cost: 5, cell: idPos}
                 });
                 actualPowerUp = null;
@@ -276,7 +288,7 @@ function handleGameStart(turn) {
         } else if (actualPowerUp === 'defensiveShield' && powerUps.shield.enable) {
             sendMessage(socket, {
                 type: 'powerUp',
-                gameId: obtainGameId(),
+                gameId: actualGameId,
                 powerupData: { type: 'shield', cost: 15, cell: idPos} });
             actualPowerUp = null;
             resetClassBt();
@@ -307,7 +319,7 @@ function handleGameStart(turn) {
             } else if (actualPowerUp === 'cruiseMissile' && powerUps.missiles.turnsWait === 0) {
                 sendMessage(socket, {
                     type: 'powerUp',
-                    gameId: obtainGameId(),
+                    gameId: actualGameId,
                     powerupData: { type: 'missiles', cost: 15, cell: idMove, opponent: players[pos.id.split('@')[0][1] - 1]} });
                 actualPowerUp = null;
                 resetClassBt();
@@ -341,6 +353,17 @@ function handleGameFinished(winner) {
     shipsSend = false;
     enableReadyBt();
     disableGameBts(true);
+
+    if (inTournament) {
+        if (winner === actualUser) {
+            sendMessage(socket, { type: 'matchWinner', tournamentId: actualLobbyId });
+            changeMessage('Prepare your ships for next round!');
+            ready.disabled = false;
+        } else {
+            sendMessage(socket, { type: 'matchLoser', tournamentId: actualLobbyId });
+            changeMessage('You lost the tournament! Be free to leave whenever you want');
+        }
+    }
 }
 
 function resetGame() {
@@ -398,6 +421,7 @@ function handleGameLost(message) {
 }
 
 function handleLeftGame(started) {
+    actualGameId = '';
     players = [];
     players.push(actualUser);
     if (started) {
@@ -543,7 +567,18 @@ function handleMessage(message) {
             handleJoinGame(message.gameId, message.playerNames, message.playerCount);
             break;
         case 'playerJoinedTournament':
-            handleJoinLobby(message.tournamentId);
+            handleJoinLobby(message.tournamentId, message.playerName);
+            break;
+        case 'leftTournament':
+            // Habilitar botones y demas
+            break;
+        case 'playerLeftTournament':
+            if (actualGameId.length === 0) {
+                changeMessage(`${message.message}. If waiting to commence, confirm to be ready again!`);
+            }
+            break;
+        case 'tournamentFinished':
+            changeMessage(`And the winner of the tournament is: ${message.winner}!!!`)
             break;
         case 'wait':
             handleWait();
@@ -678,8 +713,16 @@ function disableButtons(disable) {
     document.getElementById('game-id').disabled = disable;
 }
 
-function obtainGameId() {
-    return document.getElementById('game-id').value;
+function activateTournamentMode(disable) {
+    inTournament = disable;
+    createGame.disabled = disable;
+    createGame.hidden = disable;
+    joinGame.disabled = disable;
+    joinGame.hidden = disable;
+    leaveGame.disabled = disable;
+    leaveGame.hidden = disable;
+    document.getElementById('game-id').disabled = disable;
+    document.getElementById('game-id').hidden = disable;
 }
 
 disableButtons(true);
@@ -701,7 +744,7 @@ createGame.addEventListener('click', () => {
 
 const joinGame = document.getElementById('join-game');
 joinGame.addEventListener('click', () => {
-    sendMessage(socket, { type: 'join', gameId: obtainGameId() });
+    sendMessage(socket, { type: 'join', gameId: document.getElementById('game-id').value });
 });
 
 const sendFleet = document.getElementById('send-ships');
@@ -719,12 +762,17 @@ sendFleet.addEventListener('click', () => {
 
 const ready = document.getElementById('ready');
 ready.addEventListener('click', () => {
-    sendMessage(socket, { type: 'start', gameId: obtainGameId() });
+    if (!inTournament) {
+        sendMessage(socket, { type: 'start', gameId: actualGameId });
+    }
+    else {
+        sendMessage(socket, { type: 'nextRound', tournamentId: actualLobbyId });
+    }
 });
 
 const leaveGame = document.getElementById('leave-game');
 leaveGame.addEventListener('click', () => {
-    sendMessage(socket, { type: 'leave', gameId: obtainGameId() });
+    sendMessage(socket, { type: 'leave', gameId: actualGameId });
 });
 
 const closeConnection = document.getElementById('close-connection');
@@ -738,13 +786,18 @@ closeConnection.addEventListener('click', () => {
 });
 
 const enableTournament = document.getElementById('tournament-mode');
+
 enableTournament.addEventListener('click', () => {
-    document.getElementById('tournament-options').style.display = 'block';
-    inTournament = true;
-    createGame.disabled = true;
-    joinGame.disabled = true;
-    leaveGame.disabled = true;
-    document.getElementById('game-id').disabled = true;
+    if (!inTournament) {
+        enableTournament.innerText = 'Disable Tournament';
+        document.getElementById('tournament-options').style.display = 'block';
+        activateTournamentMode(true);
+    } else {
+        enableTournament.innerText = 'Enable Tournament';
+        document.getElementById('tournament-options').style.display = 'none';
+        activateTournamentMode(false);
+    }
+
 });
 
 const createLobby = document.getElementById('create-lobby');
@@ -786,7 +839,7 @@ const sonarBt = document.getElementById('sonar');
 sonarBt.addEventListener('click', () => {
     sendMessage(socket, {
         type: 'powerUp',
-        gameId: obtainGameId(),
+        gameId: actualGameId,
         powerupData: {type: 'sonar', cost: 5} });
 });
 

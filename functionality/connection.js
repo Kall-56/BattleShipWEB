@@ -6,7 +6,6 @@ let shipsSend = false;
 let gameJoined = false;
 
 let inTournament = false;
-let formatOfLobby = '';
 let actualLobbyId = '';
 
 let actualGameId = '';
@@ -58,6 +57,9 @@ function sendMessage(socket, message) {
 
 function enableReadyBt() {
     ready.disabled = !(shipsSend && gameJoined);
+    if (inTournament) {
+    ready.disabled = !(shipsSend);
+    }
 }
 
 function changeMessage(message) {
@@ -68,6 +70,9 @@ function disableLobbyBts(disable) {
     createLobby.disabled = disable;
     joinLobby.disabled = disable;
     document.getElementById('lobby-id').disabled = disable;
+    document.getElementsByName('format').forEach( el => {
+        el.disabled = disable;
+    });
 }
 
 function disableGameBts(disable) {
@@ -102,6 +107,7 @@ function handleGameCreation(gameId) {
     document.getElementById('game-id').value = gameId;
     leaveGame.disabled = false;
     disableGameBts(true);
+    disableLobbyBts(true);
     enableReadyBt();
     changeMessage(`Game created. ID: ${gameId}`);
 }
@@ -142,6 +148,7 @@ function handleJoinLobby(lobbyId, playerName) {
 
 function handleWait() {
     document.getElementById('ready').disabled = true;
+    lobbyReady.disabled = true;
     changeMessage('Waiting for players to be ready...');
 }
 
@@ -358,7 +365,7 @@ function handleGameFinished(winner) {
         if (winner === actualUser) {
             sendMessage(socket, { type: 'matchWinner', tournamentId: actualLobbyId });
             changeMessage('Prepare your ships for next round!');
-            ready.disabled = false;
+            ready.hidden = false;
         } else {
             sendMessage(socket, { type: 'matchLoser', tournamentId: actualLobbyId });
             changeMessage('You lost the tournament! Be free to leave whenever you want');
@@ -432,7 +439,7 @@ function handleLeftGame(started) {
     enableReadyBt();
     disableGameBts(false);
     leaveGame.disabled = true;
-    changeMessage('You left the lobby!');
+    //changeMessage('You left the lobby!');
 }
 
 function handlePlayerLeft(playerCount, playerName, started, turn) {
@@ -575,6 +582,7 @@ function handleMessage(message) {
         case 'playerLeftTournament':
             if (actualGameId.length === 0) {
                 changeMessage(`${message.message}. If waiting to commence, confirm to be ready again!`);
+                ready.disabled = false;
             }
             break;
         case 'tournamentFinished':
@@ -713,19 +721,26 @@ function disableButtons(disable) {
     document.getElementById('game-id').disabled = disable;
 }
 
-function activateTournamentMode(disable) {
-    inTournament = disable;
-    createGame.disabled = disable;
-    createGame.hidden = disable;
-    joinGame.disabled = disable;
-    joinGame.hidden = disable;
-    leaveGame.disabled = disable;
-    leaveGame.hidden = disable;
-    document.getElementById('game-id').disabled = disable;
-    document.getElementById('game-id').hidden = disable;
+function activateTournamentMode(boolean) {
+    inTournament = boolean;
+    createGame.hidden = boolean;
+    joinGame.hidden = boolean;
+    leaveGame.hidden = boolean;
+    ready.hidden = boolean;
+    document.getElementById('game-id').hidden = boolean;
 }
 
 disableButtons(true);
+
+function getFormatValue() {
+    const radios = document.getElementsByName('format');
+
+    for (let i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+            return Number(radios[i].value);
+        }
+    }
+}
 
 const submitUsername = document.getElementById('submit-user');
 submitUsername.addEventListener('click', () => {
@@ -786,7 +801,6 @@ closeConnection.addEventListener('click', () => {
 });
 
 const enableTournament = document.getElementById('tournament-mode');
-
 enableTournament.addEventListener('click', () => {
     if (!inTournament) {
         enableTournament.innerText = 'Disable Tournament';
@@ -797,12 +811,11 @@ enableTournament.addEventListener('click', () => {
         document.getElementById('tournament-options').style.display = 'none';
         activateTournamentMode(false);
     }
-
 });
 
 const createLobby = document.getElementById('create-lobby');
 createLobby.addEventListener('click', () => {
-    sendMessage(socket, { type: 'createTournament', format: 2});
+    sendMessage(socket, { type: 'createTournament', format: getFormatValue()});
 });
 
 const joinLobby = document.getElementById('join-lobby');

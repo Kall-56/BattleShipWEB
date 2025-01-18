@@ -71,12 +71,15 @@
                             </div>
                         </section>
                         <div id="tournament-options" hidden>
-                            <button id="create-lobby">Create Tournament Lobby</button>
+                            <button id="create-lobby" class="client-operation">Create Tournament Lobby</button>
+                            <label>Format of the Tournament: </label>
+                            <input type="radio" name="format" value="2" checked>VS
+                            <input type="radio" name="format" value="4">4 Battle
                             <label for="lobby-id">
-                                <input name="lobby-id" type="text" id="lobby-id" placeholder="Lobby ID" />
+                                <input class="client-operation" name="lobby-id" type="text" id="lobby-id" placeholder="Lobby ID" />
                             </label>
-                            <button id="join-lobby">Join Tournament Lobby</button>
-                            <button id="ready-lobby">Ready for tournament</button>
+                            <button id="join-lobby" class="client-operation">Join Tournament Lobby</button>
+                            <button id="ready-lobby" class="client-operation">Ready for tournament</button>
                         </div>
                     </div>
                 </div>

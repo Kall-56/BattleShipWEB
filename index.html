@@ -19,7 +19,6 @@
             <h1>BattleShip WEB</h1>
             <nav class="menu-buttons">
                     <ul>
-                        <li><a class="main-button" id="single-player-bt" href="#">Single Player</a></li>
                         <li><a class="main-button" id="multiplayer-bt" href="components/game.html">MultiPlayer</a></li>
                         <li><a class="main-button" id="leaderboard-bt" href="#leaderboard-header">Leaderboard</a></li>
                         <li><a class="main-button" id="rules-bt" href="#rules-header">Rules</a></li>
@@ -100,7 +99,7 @@
                                 <ul>
                                     <li>Players can plant a mine on their own board.</li>
                                     <li>If the enemy attacks a mine,
-                                        them receives an additional “hit” on a random adjacent cell.
+                                        they receive an additional “hit” on the same cell.
                                     </li>
                                 </ul>
                             </li>
@@ -133,7 +132,7 @@
                     </li>
                     <li><h3>Fleet Sinking:</h3>
                         <p>When all the cells of a ship have been hit, the ship is considered "sunk".
-                            The opponent is informed which ship has been sunk.
+                            The opponent is informed that a ship has been sunk.
                         </p>
                     </li>
                     <li><h3>Win Condition:</h3>
@@ -143,29 +142,26 @@
             </section>
             <hr/>
             <section id="leaderboard-header">
-                <h2>Leaderboard</h2>
-                <ol>
-                    <li><span class="player-leaderboard best3" id="top-1">Player 1</span>
-                        <span id="top-1-matches">Matches played: 000</span>
-                    </li>
-                    <li><span class="player-leaderboard best3" id="top-2">Player 2</span>
-                        <span id="top-2-matches">Matches played: 000</span>
-                    </li>
-                    <li><span class="player-leaderboard best3" id="top-3">Player 3</span>
-                        <span id="top-3-matches">Matches played: 000</span>
-                    </li>
-                    <li><span class="player-leaderboard" id="top-4">Player 4</span>
-                        <span id="top-4-matches">Matches played: 000</span>
-                    </li>
-                    <li><span class="player-leaderboard" id="top-5">Player 5</span>
-                        <span id="top-5-matches">Matches played: 000</span>
-                    </li>
-                </ol>
+                <table>
+                    <caption>Tournament Leaderboard</caption>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Victories</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-content">
+                    <tr>
+                       <td colspan="2">No content yet</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button type="button" id="load-leaderboard">Load Leaderboard</button>
             </section>
         </main>
         <footer>
             <p>No Copyright - <a href="https://www.ucab.edu.ve/">ucab.edu.ve</a></p>
-            <p>by Alex Monsalve.</p>
+            <p>by Alex Monsalve & Alessandro Ventresca.</p>
             <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
                 <path d="M0,40 C150,90 350,10 600,40 C850,70 1050,10 1200,40 L1200,00 L0,0 Z"></path>
             </svg>

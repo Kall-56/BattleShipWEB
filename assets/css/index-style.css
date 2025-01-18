@@ -48,6 +48,87 @@ section[id='leaderboard-header'] ol {
     align-items: center;
 }
 
-section[id='leaderboard-header'] ol li {
+section[id='leaderboard-header'] {
     margin: 1% 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#load-leaderboard {
+    font-family: RocknRollOne, serif;
+    background-color: rgba(12, 27, 121, 0.25);
+    color: white;
+    border: 0;
+    border-radius: 0 1em 0 1em;
+    height: 1em;
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#load-leaderboard:hover:not(:disabled) {
+    background-color: rgba(50, 60, 115, 0.8);
+    cursor: pointer;
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-family: RocknRollOne, serif;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+caption {
+    caption-side: top;
+    padding: 15px;
+    font-size: 1.6em;
+    font-family: ReggaeOne, serif;
+    background: linear-gradient(90deg, #3182e4, #6fd1e8);
+    color: white;
+    text-align: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+thead {
+    background: linear-gradient(90deg, #3182e4, #6fd1e8);
+    font-family: ReggaeOne, serif;
+    text-align: center;
+}
+
+thead th {
+    padding: 10px;
+    color: #ffffff;
+    font-size: 1.2em;
+    text-transform: uppercase;
+}
+
+tbody tr {
+    text-align: center;
+}
+
+tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+tbody tr:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.name {
+    padding: 10px;
+}
+
+.victories {
+    padding: 10px;
+    color: #ffcc00;
+    font-size: 1.1em;
+    font-family: RocknRollOne, serif;
 }
